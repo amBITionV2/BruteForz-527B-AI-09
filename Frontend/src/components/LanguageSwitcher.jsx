@@ -31,6 +31,16 @@ function LanguageSwitcher() {
       >
         {t('hindi')}
       </button>
+      <button 
+        className={`px-3 py-1.5 border rounded-md transition-colors duration-200 text-sm font-medium
+          ${i18n.language === 'kn'
+            ? 'bg-blue-500 text-white border-blue-500 hover:bg-blue-600' 
+            : 'bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-600'}`}
+        onClick={() => changeLanguage('kn')}
+        aria-pressed={i18n.language === 'kn'}
+      >
+        {t('kannada')}
+      </button>
     </div>
   );
 }
