@@ -11,10 +11,7 @@ const resources = {
       medicationReminder: "Medication Reminder",
       sos: "SOS",
       games: "Games",
-<<<<<<< HEAD
-=======
       kannada: "ಕನ್ನಡ",
->>>>>>> 608603a92b7f19dba6ba5d6c37c1a192c24525e5
       simonSays: "Simon Says",
       pictureMatch: "Picture Match",
       wordScramble: "Word Scramble",
@@ -675,10 +672,6 @@ const resources = {
       noSummaryDataFound: "चयनित व्यक्ति या दिनांक के लिए कोई सारांश डेटा नहीं मिला।",
     },
   },
-<<<<<<< HEAD
-};
-
-=======
   kn: {
   translation: {
     loading: "ಲೋಡ್ ಆಗುತ್ತಿದೆ...",
@@ -880,7 +873,6 @@ const resources = {
 };
 
 
->>>>>>> 608603a92b7f19dba6ba5d6c37c1a192c24525e5
 i18n.use(initReactI18next).init({
   resources,
   lng: localStorage.getItem("language") || "en",

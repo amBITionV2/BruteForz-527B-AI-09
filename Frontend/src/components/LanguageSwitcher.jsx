@@ -31,8 +31,6 @@ function LanguageSwitcher() {
       >
         {t('hindi')}
       </button>
-<<<<<<< HEAD
-=======
       <button 
         className={`px-3 py-1.5 border rounded-md transition-colors duration-200 text-sm font-medium
           ${i18n.language === 'kn'
@@ -43,7 +41,6 @@ function LanguageSwitcher() {
       >
         {t('kannada')}
       </button>
->>>>>>> 608603a92b7f19dba6ba5d6c37c1a192c24525e5
     </div>
   );
 }
