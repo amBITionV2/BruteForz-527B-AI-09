@@ -17,6 +17,11 @@ function Summary() {
   const user = JSON.parse(localStorage.getItem('user'));
   const patientId = user ? user.user_id : null;
 
+  // Chatbot states
+  const [chatMessages, setChatMessages] = useState([]);
+  const [chatInput, setChatInput] = useState('');
+  const [isChatLoading, setIsChatLoading] = useState(false);
+
   useEffect(() => {
     const fetchKnownPersons = async () => {
       try {
@@ -151,6 +156,52 @@ function Summary() {
   const getSelectedPersonName = () => {
     const person = knownPersons.find(p => p.known_person_id === selectedPersonId);
     return person ? person.name : t('unknownPerson');
+  };
+
+  const handleChatSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!chatInput.trim()) return;
+    
+    const userMessage = { role: 'user', content: chatInput };
+    setChatMessages(prev => [...prev, userMessage]);
+    setChatInput('');
+    setIsChatLoading(true);
+    
+    try {
+      const response = await axios.post('http://localhost:5000/api/chatbot/ask', {
+        /* const response = await axios.post('https://echomind-6.onrender.com/api/chatbot/ask', { */
+        question: chatInput,
+        patient_id: patientId
+      });
+      
+      if (response.data.success) {
+        const botMessage = {
+          role: 'assistant',
+          content: response.data.answer,
+          metadata: {
+            conversation_count: response.data.conversation_count,
+            people_involved: response.data.people_involved
+          }
+        };
+        setChatMessages(prev => [...prev, botMessage]);
+      } else {
+        const errorMessage = {
+          role: 'assistant',
+          content: 'Sorry, I encountered an error processing your question. Please try again.'
+        };
+        setChatMessages(prev => [...prev, errorMessage]);
+      }
+    } catch (err) {
+      console.error('Error asking chatbot:', err);
+      const errorMessage = {
+        role: 'assistant',
+        content: 'Sorry, I could not connect to the chatbot service. Please try again later.'
+      };
+      setChatMessages(prev => [...prev, errorMessage]);
+    } finally {
+      setIsChatLoading(false);
+    }
   };
 
   const renderSummaryContent = (summary) => {
@@ -288,6 +339,105 @@ function Summary() {
           <p className="font-medium">{error}</p>
         </motion.div>
       )}
+
+      {/* Chatbot Section */}
+      <motion.div
+        className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 shadow-xl max-w-3xl mx-auto border border-black"
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: "spring", stiffness: 80, damping: 10, delay: 0.2 }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-300">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            <path d="M9 10h.01"></path>
+            <path d="M15 10h.01"></path>
+          </svg>
+          <h2 className="text-2xl font-bold text-white">Ask About Your Conversations</h2>
+        </div>
+        
+        <p className="text-gray-300 text-sm mb-4">
+          Ask me anything about your recorded conversations. I'll answer based only on what has been discussed.
+        </p>
+
+        {/* Chat Messages */}
+        <div className="bg-gray-800 bg-opacity-40 rounded-xl p-4 mb-4 max-h-80 overflow-y-auto space-y-3 custom-scrollbar">
+          {chatMessages.length === 0 ? (
+            <div className="text-center text-gray-400 py-8">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-3 opacity-50">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              </svg>
+              <p className="text-lg">Start by asking a question!</p>
+              <p className="text-sm mt-2">For example: "What did we talk about yesterday?" or "Who did I speak with recently?"</p>
+            </div>
+          ) : (
+            chatMessages.map((msg, idx) => (
+              <motion.div
+                key={idx}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div
+                  className={`max-w-[80%] p-3 rounded-lg ${
+                    msg.role === 'user'
+                      ? 'bg-purple-600 text-white rounded-br-none'
+                      : 'bg-gray-700 text-gray-100 rounded-bl-none'
+                  }`}
+                >
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                  {msg.metadata && (
+                    <p className="text-xs opacity-70 mt-2">
+                      Based on {msg.metadata.conversation_count} messages with {msg.metadata.people_involved?.join(', ')}
+                    </p>
+                  )}
+                </div>
+              </motion.div>
+            ))
+          )}
+          {isChatLoading && (
+            <motion.div
+              className="flex justify-start"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+            >
+              <div className="bg-gray-700 text-gray-100 p-3 rounded-lg rounded-bl-none">
+                <div className="flex gap-1">
+                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </div>
+
+        {/* Chat Input */}
+        <form onSubmit={handleChatSubmit} className="flex gap-2">
+          <input
+            type="text"
+            value={chatInput}
+            onChange={(e) => setChatInput(e.target.value)}
+            placeholder="Ask a question about your conversations..."
+            className="flex-1 p-3 rounded-lg bg-gray-700 bg-opacity-50 border border-gray-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition duration-200"
+            disabled={isChatLoading}
+          />
+          <motion.button
+            type="submit"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            disabled={isChatLoading || !chatInput.trim()}
+            className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-lg transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed border border-black flex items-center gap-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+            Ask
+          </motion.button>
+        </form>
+      </motion.div>
 
       {/* Control Panel */}
       <motion.div
