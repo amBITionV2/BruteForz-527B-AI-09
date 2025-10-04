@@ -146,7 +146,7 @@ function VisualLocationMemory() {
   const startNewRound = () => {
     const emptyGrid = Array(gridSize * gridSize).fill(false);
 
-    const objectCount = Math.min(3 + Math.floor(level / 2), Math.floor(gridSize * gridSize * 0.4)); // Max 40% of grid
+    let objectCount = Math.min(3 + Math.floor(level / 2), Math.floor(gridSize * gridSize * 0.4)); // Max 40% of grid
     if (objectCount === 0) { // Ensure at least one object
       objectCount = 1;
     }

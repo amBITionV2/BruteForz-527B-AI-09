@@ -1,0 +1,23 @@
+2025-10-05 04:58:48,586 - apscheduler.scheduler - INFO - Scheduler started
+2025-10-05 04:58:49,580 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.10.0.121:5000
+2025-10-05 04:58:49,580 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-05 04:58:49,586 - werkzeug - INFO -  * Restarting with stat
+2025-10-05 04:58:53,253 - apscheduler.scheduler - INFO - Scheduler started
+2025-10-05 04:58:53,295 - werkzeug - WARNING -  * Debugger is active!
+2025-10-05 04:58:53,303 - werkzeug - INFO -  * Debugger PIN: 360-650-478
+2025-10-05 05:02:56,612 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 05:02:56] "OPTIONS /api/login HTTP/1.1" 200 -
+2025-10-05 05:02:57,064 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 05:02:57] "POST /api/login HTTP/1.1" 200 -
+2025-10-05 05:03:00,946 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 05:03:00] "GET /api/known-persons/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 05:03:01,013 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 05:03:01] "GET /api/known-persons/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 05:03:01,441 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 05:03:01] "GET /api/known-persons/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 05:03:06,070 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-10-05 05:03:06,113 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 05:03:06] "GET /api/summarize-all-conversations?patient_id=c6905781-746c-435a-9609-efa1cf6b4c66&known_person_id=6832c80557d356e163c3679e HTTP/1.1" 200 -
+2025-10-05 05:03:27,328 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 05:03:27] "OPTIONS /api/chatbot/ask HTTP/1.1" 200 -
+2025-10-05 05:03:27,808 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-10-05 05:03:27,811 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 05:03:27] "POST /api/chatbot/ask HTTP/1.1" 200 -
+2025-10-05 05:03:39,578 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 05:03:39] "OPTIONS /api/chatbot/ask HTTP/1.1" 200 -
+2025-10-05 05:03:39,859 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
+2025-10-05 05:03:39,863 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 05:03:39] "POST /api/chatbot/ask HTTP/1.1" 200 -
