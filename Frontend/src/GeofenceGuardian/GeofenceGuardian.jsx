@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from 'react';
 import { MapPin, Shield, AlertTriangle, Settings } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import NavBack from "../NavBack";
 import { useTranslation } from 'react-i18next'; // Add this import
 
@@ -144,86 +145,167 @@ const SosButton = ({ autoTrigger = false, user, apiUrl = 'http://localhost:5000/
   return (
     <div className={`sos-container ${expanded ? 'expanded' : ''} max-w-md mx-auto`}>
       {autoTrigger && (
-        <div className="mb-4 p-3 bg-red-800/60 border border-red-700 rounded-lg text-red-100 text-center font-semibold">
-          <AlertTriangle size={20} className="inline mr-2 text-red-400" />
-          <strong>{t('automaticSOSTriggered')}</strong>
-        </div>
+        <motion.div 
+          className="mb-4 p-4 bg-gradient-to-r from-red-600/80 to-orange-600/80 backdrop-blur-md border-2 border-red-400 rounded-xl text-white text-center font-bold shadow-xl"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ 
+            opacity: 1, 
+            scale: 1,
+            boxShadow: [
+              "0 0 20px rgba(239, 68, 68, 0.6)",
+              "0 0 40px rgba(239, 68, 68, 0.9)",
+              "0 0 20px rgba(239, 68, 68, 0.6)"
+            ]
+          }}
+          transition={{
+            boxShadow: {
+              duration: 1.5,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }
+          }}
+        >
+          <AlertTriangle size={24} className="inline mr-2 text-red-200" />
+          <strong>🚨 {t('automaticSOSTriggered')}</strong>
+        </motion.div>
       )}
 
       {countdown !== null ? (
-        <div className="countdown-container text-center p-6 bg-purple-900/40 backdrop-blur-md rounded-xl border-2 border-red-700 shadow-xl text-white">
-          <div className="countdown-timer mb-4">
-            <div className="text-6xl font-extrabold text-red-400 mb-2 animate-pulse">
+        <motion.div 
+          className="countdown-container text-center p-8 bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-xl rounded-3xl border-2 border-red-500 shadow-2xl text-white relative overflow-hidden"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ 
+            opacity: 1, 
+            scale: 1,
+            boxShadow: [
+              "0 0 30px rgba(239, 68, 68, 0.6)",
+              "0 0 60px rgba(239, 68, 68, 0.9)",
+              "0 0 30px rgba(239, 68, 68, 0.6)"
+            ]
+          }}
+          transition={{
+            scale: { duration: 0.3 },
+            boxShadow: {
+              duration: 1,
+              repeat: Infinity,
+              ease: "easeInOut"
+            }
+          }}
+        >
+          {/* Decorative gradient bar */}
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-500 via-orange-500 to-red-500"></div>
+          <div className="countdown-timer mb-6">
+            <motion.div 
+              className="text-8xl font-extrabold text-red-400 mb-4"
+              animate={{ 
+                scale: [1, 1.2, 1],
+                opacity: [1, 0.7, 1]
+              }}
+              transition={{ 
+                duration: 1,
+                repeat: Infinity
+              }}
+            >
               {countdown}
-            </div>
-            <div className="text-lg text-purple-200 mb-4">
+            </motion.div>
+            <div className="text-xl text-purple-100 mb-4 font-bold">
               {autoTrigger ? t('autoSendingSosAlert', {seconds: countdown}) : t('sendingSosIn', {seconds: countdown})}
             </div>
-            <div className="text-sm text-purple-300 mb-4">
-              {location ? t('locationAcquired') : t('gettingLocation')}
-              {battery && t('batteryPercent', {percent: battery})}
+            <div className="text-base text-purple-200 mb-6 font-medium bg-black/20 p-3 rounded-xl">
+              {location ? <span className="text-green-300">✅ {t('locationAcquired')}</span> : <span className="text-yellow-300">📍 {t('gettingLocation')}</span>}
+              {battery && <span className="ml-4">🔋 {t('batteryPercent', {percent: battery})}</span>}
             </div>
           </div>
-          <button
-            className="cancel-button bg-gray-700 hover:bg-gray-800 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform active:scale-95"
+          <motion.button
+            className="cancel-button bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white px-8 py-4 rounded-xl font-bold transition-all duration-300 transform active:scale-95 shadow-xl"
             onClick={cancelSos}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
-            {t('cancelSOS')}
-          </button>
-        </div>
+            ❌ {t('cancelSOS')}
+          </motion.button>
+        </motion.div>
       ) : (
         <>
           {!autoTrigger && (
-            <button
-              className={`w-full bg-red-600 hover:bg-red-700 text-white px-8 py-4 text-xl font-bold rounded-full shadow-lg transition-all duration-300 transform hover:scale-105 ${sending ? 'animate-pulse opacity-75' : 'animate-pulse'}`}
+            <motion.button
+              className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-6 text-2xl font-extrabold rounded-full shadow-2xl transition-all duration-300 relative overflow-hidden group"
               onClick={startSosCountdown}
               disabled={sending}
               aria-label={t('sendEmergencyAlert')}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              animate={!sending ? {
+                boxShadow: [
+                  "0 0 20px rgba(220, 38, 38, 0.5)",
+                  "0 0 40px rgba(220, 38, 38, 0.8)",
+                  "0 0 20px rgba(220, 38, 38, 0.5)"
+                ]
+              } : {}}
+              transition={{
+                boxShadow: {
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }
+              }}
             >
-              {sending ? t('sending') : t('emergencySOS')}
-            </button>
+              <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+              <span className="relative z-10">
+                {sending ? <span>📡 {t('sending')}</span> : <span>🚨 {t('emergencySOS')}</span>}
+              </span>
+            </motion.button>
           )}
 
           {status && (
-            <div className={`mt-4 p-4 rounded-lg text-center font-semibold ${
-              status.type === 'success' ? 'bg-green-700/60 border border-green-600 text-white' :
-              status.type === 'error' ? 'bg-red-800/60 border border-red-700 text-white' :
-              'bg-blue-800/60 border border-blue-700 text-white'
-            }`}>
-              <div className="font-bold mb-2">
+            <motion.div 
+              className={`mt-6 p-5 rounded-2xl text-center font-bold shadow-xl ${
+                status.type === 'success' ? 'bg-gradient-to-r from-green-600/80 to-emerald-600/80 backdrop-blur-md border-2 border-green-400 text-white' :
+                status.type === 'error' ? 'bg-gradient-to-r from-red-600/80 to-orange-600/80 backdrop-blur-md border-2 border-red-400 text-white' :
+                'bg-gradient-to-r from-blue-600/80 to-indigo-600/80 backdrop-blur-md border-2 border-blue-400 text-white'
+              }`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="text-xl mb-2">
                 {status.type === 'success' ? '✅' : status.type === 'error' ? '❌' : 'ℹ️'}
                 {status.message}
               </div>
               {status.details && (
-                <div className="text-sm opacity-80 text-purple-100">
-                  {t('time')}: {new Date(status.details.timestamp).toLocaleTimeString()}
+                <div className="text-sm opacity-90 text-white bg-black/20 p-3 rounded-xl mt-3">
+                  <div>🕒 {t('time')}: {new Date(status.details.timestamp).toLocaleTimeString()}</div>
                   {status.details.location && (
-                    <div>{t('location')}: {status.details.location.latitude.toFixed(5)}, {status.details.location.longitude.toFixed(5)}</div>
+                    <div className="mt-1">📍 {t('location')}: {status.details.location.latitude.toFixed(5)}, {status.details.location.longitude.toFixed(5)}</div>
                   )}
                 </div>
               )}
-            </div>
+            </motion.div>
           )}
         </>
       )}
 
       {expanded && countdown === null && !autoTrigger && (
-        <div className="mt-4 p-4 bg-purple-900/40 backdrop-blur-md rounded-lg text-center text-sm text-purple-200 border border-purple-700">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
+        <motion.div 
+          className="mt-6 p-5 bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-xl rounded-2xl text-center text-base text-white border border-white/20 shadow-xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="grid grid-cols-2 gap-4 font-semibold">
+            <div className="bg-black/20 p-3 rounded-xl">
               {location ? (
-                <span className="text-green-400">{t('locationAvailable')}</span>
+                <span className="text-green-300">✅ {t('locationAvailable')}</span>
               ) : (
-                <span className="text-red-400">{t('locationUnavailable')}</span>
+                <span className="text-red-300">❌ {t('locationUnavailable')}</span>
               )}
             </div>
             {battery !== null && (
-              <div>
-                {t('battery')}: {battery}%
+              <div className="bg-black/20 p-3 rounded-xl">
+                🔋 {t('battery')}: {battery}%
               </div>
             )}
           </div>
-        </div>
+        </motion.div>
       )}
     </div>
   );
@@ -328,21 +410,21 @@ const GeofenceMap = ({ center, radius, currentLocation, isOutside }) => {
   };
 
   return (
-    <div className="border-2 border-purple-700 rounded-lg p-4 bg-purple-950/20 shadow-inner">
+    <div className="border-2 border-purple-500 rounded-2xl p-5 bg-gradient-to-br from-purple-900/40 to-blue-900/40 backdrop-blur-sm shadow-xl">
       <canvas
         ref={canvasRef}
         width="400"
         height="300"
-        className="w-full h-auto border border-purple-700 rounded"
+        className="w-full h-auto border-2 border-purple-400 rounded-xl shadow-lg"
       />
-      <div className="mt-2 text-sm text-purple-200 text-center">
-        <div className="flex justify-center items-center gap-4">
-          <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-a78bfa rounded-full"></div>
+      <div className="mt-4 text-sm text-white text-center font-semibold">
+        <div className="flex justify-center items-center gap-6">
+          <div className="flex items-center gap-2 bg-black/20 px-3 py-2 rounded-lg">
+            <div className="w-4 h-4 bg-purple-400 rounded-full shadow-lg"></div>
             <span>{t('center')}</span>
           </div>
-          <div className="flex items-center gap-1">
-            <div className={`w-3 h-3 ${isOutside ? 'bg-red-500' : 'bg-green-500'} rounded-full`}></div>
+          <div className="flex items-center gap-2 bg-black/20 px-3 py-2 rounded-lg">
+            <div className={`w-4 h-4 ${isOutside ? 'bg-red-500' : 'bg-green-500'} rounded-full shadow-lg`}></div>
             <span>{t('currentPosition')}</span>
           </div>
         </div>
@@ -549,22 +631,56 @@ const GeofenceGuardian = () => {
   }, [watchId]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black p-4 font-sans text-white">
-      <NavBack className="mb-6" /> {/* Add margin-bottom to NavBack */}
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 p-4 font-sans text-white relative overflow-hidden">
+      {/* Animated Background Blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
+      {/* Content Wrapper */}
+      <div className="relative z-10">
+        <NavBack className="mb-6" />
+      <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-extrabold mb-2 flex items-center justify-center gap-3 text-white">
-            <Shield className="text-purple-400" size={40} />
-            {t('geofenceGuardian')}
+          <h1 className="text-5xl sm:text-6xl font-extrabold mb-3 flex items-center justify-center gap-4">
+            <motion.div
+              animate={{ 
+                rotate: [0, 10, -10, 0],
+                scale: [1, 1.1, 1]
+              }}
+              transition={{ 
+                duration: 3,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+            >
+              <Shield className="text-transparent bg-clip-text" style={{fill: 'url(#shieldGradient)'}} size={50} />
+            </motion.div>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 drop-shadow-lg">
+              {t('geofenceGuardian')}
+            </span>
           </h1>
-          <p className="text-purple-200 text-lg">{t('safetyPerimeterTagline')}</p>
+          <p className="text-purple-200 text-xl font-medium">🛡️ {t('safetyPerimeterTagline')}</p>
+          <svg width="0" height="0">
+            <defs>
+              <linearGradient id="shieldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" style={{stopColor: '#60a5fa', stopOpacity: 1}} />
+                <stop offset="50%" style={{stopColor: '#a78bfa', stopOpacity: 1}} />
+                <stop offset="100%" style={{stopColor: '#f472b6', stopOpacity: 1}} />
+              </linearGradient>
+            </defs>
+          </svg>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Control Panel */}
-          <div className="bg-purple-900/40 backdrop-blur-md rounded-xl shadow-xl p-6 border border-purple-700">
-            <h2 className="text-2xl font-bold mb-6 flex items-center gap-2 text-white">
-              <Settings className="text-purple-400" size={24} />
+          <div className="bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20 relative overflow-hidden">
+            {/* Decorative gradient bar */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
+            <h2 className="text-3xl font-bold mb-6 flex items-center gap-3 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+              <Settings className="text-purple-400" size={28} />
               {t('controlPanel')}
             </h2>
 
@@ -574,32 +690,48 @@ const GeofenceGuardian = () => {
               </div>
             )}
 
-            <button
+            <motion.button
               onClick={handleGetLocation}
-              className="w-full bg-purple-600 text-white px-6 py-4 text-lg rounded-xl hover:bg-purple-700 transition-all duration-300 transform active:scale-95 shadow-lg mb-6 flex items-center justify-center gap-2 font-semibold"
+              className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 py-4 text-lg rounded-xl transition-all duration-300 shadow-xl mb-6 flex items-center justify-center gap-3 font-bold relative overflow-hidden group"
+              whileHover={{ scale: 1.02, y: -2 }}
+              whileTap={{ scale: 0.98 }}
             >
-              <MapPin size={20} />
-              {t('setCurrentLocation')}
-            </button>
+              <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 2, repeat: Infinity }}
+                className="relative z-10"
+              >
+                <MapPin size={24} />
+              </motion.div>
+              <span className="relative z-10">{t('setCurrentLocation')}</span>
+            </motion.button>
 
             {location && (
               <>
-                <div className="bg-purple-800/60 rounded-lg p-4 mb-6 border border-purple-700">
-                  <h3 className="font-bold mb-2 text-purple-200">{t('locationSet')}</h3>
-                  <p className="text-sm text-purple-100">
+                <motion.div 
+                  className="bg-gradient-to-br from-blue-500/20 to-purple-500/20 backdrop-blur-md rounded-xl p-5 mb-6 border border-blue-400/30 shadow-lg"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                >
+                  <h3 className="font-bold mb-3 text-blue-200 flex items-center gap-2">
+                    <span className="text-xl">📍</span> {t('locationSet')}
+                  </h3>
+                  <p className="text-sm text-purple-100 font-mono bg-black/20 p-2 rounded">
                     {t('lat')}: {location.latitude.toFixed(6)}<br/>
                     {t('lng')}: {location.longitude.toFixed(6)}
                   </p>
                   {isGeofenceActive && currentLocation && (
-                    <p className="text-sm text-purple-300 mt-2">
-                      {t('distanceFromCenter', {distance: lastDistance.toFixed(1)})}
+                    <p className="text-sm text-green-300 mt-3 font-semibold flex items-center gap-2">
+                      <span>📏</span> {t('distanceFromCenter', {distance: lastDistance.toFixed(1)})}
                     </p>
                   )}
-                </div>
+                </motion.div>
 
                 <div className="mb-6">
-                  <label className="block text-center mb-3 font-semibold text-white">
-                    Safety Perimeter: {tempRadius} meters
+                  <label className="block text-center mb-4 font-bold text-white text-lg">
+                    📏 Safety Perimeter: <span className="text-blue-300">{tempRadius}</span> meters
                   </label>
                   <input
                     type="range"
@@ -608,45 +740,74 @@ const GeofenceGuardian = () => {
                     step="0.1"
                     value={tempRadius}
                     onChange={e => setTempRadius(Number(e.target.value))}
-                    className="w-full h-2 rounded-lg appearance-none cursor-pointer"
+                    className="w-full h-3 rounded-lg appearance-none cursor-pointer shadow-lg"
                     style={{
-                      background: `linear-gradient(to right, #a78bfa 0%, #a78bfa ${((tempRadius-0.1)/(2000-0.1))*100}%, #6b21a8 ${((tempRadius-0.1)/(2000-0.1))*100}%, #6b21a8 100%)`
+                      background: `linear-gradient(to right, #60a5fa 0%, #a78bfa ${((tempRadius-0.1)/(2000-0.1))*100}%, #312e81 ${((tempRadius-0.1)/(2000-0.1))*100}%, #312e81 100%)`
                     }}
                   />
-                  <div className="flex justify-between text-xs text-purple-300 mt-1">
+                  <div className="flex justify-between text-sm text-purple-300 mt-2 font-semibold">
                     <span>0.1m</span>
                     <span>1000m</span>
                     <span>2000m</span>
                   </div>
                 </div>
 
-                <button
+                <motion.button
                   onClick={handleSetPerimeter}
-                  className="w-full bg-green-600 text-white px-6 py-4 text-lg rounded-xl hover:bg-green-700 transition-all duration-300 transform active:scale-95 shadow-lg mb-4 font-semibold"
+                  className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white px-6 py-4 text-lg rounded-xl transition-all duration-300 shadow-xl mb-4 font-bold relative overflow-hidden group"
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
                 >
-                  {t('activateGeofenceProtection')}
-                </button>
+                  <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                  <span className="relative z-10 flex items-center justify-center gap-2">
+                    <Shield size={20} />
+                    {t('activateGeofenceProtection')}
+                  </span>
+                </motion.button>
 
                 {isGeofenceActive && (
-                  <div className="bg-green-700/60 border border-green-600 text-white px-4 py-3 rounded-lg">
-                    <div className="flex items-center gap-2">
-                      <Shield size={20} className="text-green-300" />
-                      <span className="font-bold">
-                        {t('geofenceActiveRadius', {radius: confirmedRadius})}
+                  <motion.div 
+                    className="bg-gradient-to-r from-green-600/80 to-emerald-600/80 backdrop-blur-md border-2 border-green-400 text-white px-5 py-4 rounded-xl shadow-xl"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ 
+                      opacity: 1, 
+                      scale: 1,
+                      boxShadow: [
+                        "0 0 20px rgba(34, 197, 94, 0.5)",
+                        "0 0 40px rgba(34, 197, 94, 0.8)",
+                        "0 0 20px rgba(34, 197, 94, 0.5)"
+                      ]
+                    }}
+                    transition={{
+                      boxShadow: {
+                        duration: 2,
+                        repeat: Infinity,
+                        ease: "easeInOut"
+                      }
+                    }}
+                  >
+                    <div className="flex items-center gap-3 mb-2">
+                      <Shield size={24} className="text-green-200" />
+                      <span className="font-bold text-lg">
+                        ✅ {t('geofenceActiveRadius', {radius: confirmedRadius})}
                       </span>
                     </div>
-                    <div className="text-sm mt-1 text-green-200">
-                      {t('realtimeTracking')}: {watchId ? t('on') : t('off')}
+                    <div className="text-sm mt-1 text-green-100 font-medium">
+                      📡 {t('realtimeTracking')}: {watchId ? <span className="text-green-300 font-bold">{t('on')}</span> : t('off')}
                     </div>
-                  </div>
+                  </motion.div>
                 )}
               </>
             )}
           </div>
 
           {/* Visual Map */}
-          <div className="bg-purple-900/40 backdrop-blur-md rounded-xl shadow-xl p-6 border border-purple-700">
-            <h2 className="text-2xl font-bold mb-6 text-white">{t('visualMap')}</h2>
+          <div className="bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-xl rounded-3xl shadow-2xl p-8 border border-white/20 relative overflow-hidden">
+            {/* Decorative gradient bar */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-blue-500"></div>
+            <h2 className="text-3xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-blue-400">
+              🗺️ {t('visualMap')}
+            </h2>
 
             {location ? (
               <GeofenceMap
@@ -656,9 +817,14 @@ const GeofenceGuardian = () => {
                 isOutside={isOutsideGeofence}
               />
             ) : (
-              <div className="border-2 border-dashed border-purple-700 rounded-lg p-8 text-center text-purple-300">
-                <MapPin size={48} className="mx-auto mb-4 text-purple-500" />
-                <p>{t('setLocationToSeeMap')}</p>
+              <div className="border-2 border-dashed border-purple-500 rounded-2xl p-12 text-center bg-gradient-to-br from-purple-900/30 to-blue-900/30 backdrop-blur-sm">
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ duration: 2, repeat: Infinity }}
+                >
+                  <MapPin size={64} className="mx-auto mb-4 text-purple-400" />
+                </motion.div>
+                <p className="text-purple-200 text-lg font-medium">{t('setLocationToSeeMap')}</p>
               </div>
             )}
           </div>
@@ -666,13 +832,43 @@ const GeofenceGuardian = () => {
 
         {/* Alert Section */}
         {isOutsideGeofence && (
-          <div className="mt-8 bg-red-800/60 border-2 border-red-700 rounded-xl p-6 text-center shadow-xl">
-            <div className="flex items-center justify-center gap-3 mb-4">
-              <AlertTriangle className="text-red-400" size={32} />
-              <h3 className="text-2xl font-bold text-red-300">{t('geofenceBreachDetected')}</h3>
+          <motion.div 
+            className="mt-8 bg-gradient-to-r from-red-600/80 to-orange-600/80 backdrop-blur-xl border-2 border-red-400 rounded-3xl p-8 text-center shadow-2xl relative overflow-hidden"
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ 
+              opacity: 1, 
+              y: 0, 
+              scale: 1,
+              boxShadow: [
+                "0 0 30px rgba(239, 68, 68, 0.6)",
+                "0 0 60px rgba(239, 68, 68, 0.9)",
+                "0 0 30px rgba(239, 68, 68, 0.6)"
+              ]
+            }}
+            transition={{
+              duration: 0.5,
+              boxShadow: {
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }
+            }}
+          >
+            {/* Decorative gradient bar */}
+            <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-500 via-orange-500 to-red-500"></div>
+            <div className="flex items-center justify-center gap-4 mb-6">
+              <motion.div
+                animate={{ rotate: [0, 10, -10, 0] }}
+                transition={{ duration: 0.5, repeat: Infinity }}
+              >
+                <AlertTriangle className="text-red-200" size={40} />
+              </motion.div>
+              <h3 className="text-3xl font-extrabold text-white drop-shadow-lg">
+                ⚠️ {t('geofenceBreachDetected')}
+              </h3>
             </div>
-            <p className="text-red-100 mb-6 text-lg">
-              {t('movedOutsideSafeArea', {distance: lastDistance.toFixed(1)})}
+            <p className="text-red-50 mb-8 text-xl font-bold">
+              🚨 {t('movedOutsideSafeArea', {distance: lastDistance.toFixed(1)})}
             </p>
             <SosButton
               autoTrigger={sosTriggered}
@@ -680,34 +876,62 @@ const GeofenceGuardian = () => {
              apiUrl="http://localhost:5000/api"
              // apiUrl="https://echomind-6.onrender.com/api"
             />
-          </div>
+          </motion.div>
         )}
 
         {/* Status Bar */}
-        <div className="mt-8 bg-purple-900/40 backdrop-blur-md rounded-xl shadow-xl p-4 border border-purple-700">
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm font-semibold">
+        <motion.div 
+          className="mt-8 bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-xl rounded-2xl shadow-2xl p-6 border border-white/20 relative overflow-hidden"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+        >
+          {/* Decorative gradient bar */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 via-blue-500 to-purple-500"></div>
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm font-bold">
             <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${location ? 'bg-green-400' : 'bg-gray-500'}`}></div>
-              <span>{t('location')} {location ? t('set') : t('notSet')}</span>
+              <motion.div 
+                className={`w-4 h-4 rounded-full ${location ? 'bg-green-400' : 'bg-gray-500'}`}
+                animate={location ? { scale: [1, 1.2, 1] } : {}}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              <span className="text-white">{t('location')} {location ? <span className="text-green-400">{t('set')}</span> : <span className="text-gray-400">{t('notSet')}</span>}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${isGeofenceActive ? 'bg-green-400' : 'bg-gray-500'}`}></div>
-              <span>{t('geofence')} {isGeofenceActive ? t('active') : t('inactive')}</span>
+              <motion.div 
+                className={`w-4 h-4 rounded-full ${isGeofenceActive ? 'bg-green-400' : 'bg-gray-500'}`}
+                animate={isGeofenceActive ? { scale: [1, 1.2, 1] } : {}}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              <span className="text-white">{t('geofence')} {isGeofenceActive ? <span className="text-green-400">{t('active')}</span> : <span className="text-gray-400">{t('inactive')}</span>}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${watchId ? 'bg-green-400' : 'bg-gray-500'}`}></div>
+              <motion.div 
+                className={`w-4 h-4 rounded-full ${watchId ? 'bg-green-400' : 'bg-gray-500'}`}
+                animate={watchId ? { scale: [1, 1.2, 1] } : {}}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
               <span className={statusDisplay.color}>{statusDisplay.text}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${locationAccuracy && locationAccuracy < 20 ? 'bg-green-400' : 'bg-yellow-400'}`}></div>
-              <span>{t('accuracy')}: {locationAccuracy ? `±${locationAccuracy.toFixed(1)}m` : 'N/A'}</span>
+              <motion.div 
+                className={`w-4 h-4 rounded-full ${locationAccuracy && locationAccuracy < 20 ? 'bg-green-400' : 'bg-yellow-400'}`}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              />
+              <span className="text-white">{t('accuracy')}: {locationAccuracy ? `±${locationAccuracy.toFixed(1)}m` : 'N/A'}</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className={`w-3 h-3 rounded-full ${isOutsideGeofence ? 'bg-red-400' : 'bg-green-400'}`}></div>
-              <span>{isOutsideGeofence ? t('outside') : t('inside')} {t('perimeter')}</span>
+              <motion.div 
+                className={`w-4 h-4 rounded-full ${isOutsideGeofence ? 'bg-red-400' : 'bg-green-400'}`}
+                animate={{ scale: [1, 1.2, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
+              <span className="text-white">{isOutsideGeofence ? <span className="text-red-400">{t('outside')}</span> : <span className="text-green-400">{t('inside')}</span>} {t('perimeter')}</span>
             </div>
           </div>
-        </div>
+        </motion.div>
+      </div>
       </div>
     </div>
   );

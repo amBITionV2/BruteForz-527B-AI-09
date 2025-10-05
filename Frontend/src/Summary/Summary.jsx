@@ -249,12 +249,14 @@ function Summary() {
         {Object.entries(sections).map(([title, content], index) => (
           <motion.div
             key={index}
-            className="bg-gray-700 bg-opacity-10 rounded-lg p-4 shadow-inner border border-black backdrop-blur-sm"
+            className="bg-gradient-to-br from-gray-800/30 to-gray-900/30 backdrop-blur-md rounded-xl p-5 shadow-lg border border-purple-500/20 relative overflow-hidden group hover:border-purple-400/40 transition-all duration-300"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
+            whileHover={{ y: -2 }}
           >
-            <h4 className="text-xl font-bold text-purple-300 mb-2">{title}</h4>
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500/0 via-purple-400/50 to-purple-500/0"></div>
+            <h4 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-300 to-pink-300 mb-2">{title}</h4>
             <div className="text-gray-200 text-sm leading-relaxed">
               {content.split('\n').map((paragraph, idx) => {
                 if (paragraph.trim().startsWith('*')) {
@@ -294,7 +296,14 @@ function Summary() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.5,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    }
   };
 
   const navbarVariants = {
@@ -304,7 +313,7 @@ function Summary() {
       y: 0,
       transition: {
         duration: 0.6,
-        ease: "easeOut",
+        ease: [0.22, 1, 0.36, 1],
         staggerChildren: 0.1
       }
     }
@@ -312,15 +321,22 @@ function Summary() {
 
   const navItemVariants = {
     hidden: { opacity: 0, y: -20 },
-    visible: { opacity: 1, y: 0 }
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        duration: 0.4,
+        ease: [0.22, 1, 0.36, 1]
+      }
+    }
   };
 
   const brainGlowVariants = {
     initial: { textShadow: "0 0px 0px rgba(255,255,255,0.7)" },
     animate: {
-      textShadow: ["0 0 0px rgba(255,255,255,0.7)", "0 0 8px rgba(255,255,255,0.7)", "0 0 0px rgba(255,255,255,0.7)"],
+      textShadow: ["0 0 0px rgba(255,255,255,0.7)", "0 0 20px rgba(255,255,255,0.9)", "0 0 0px rgba(255,255,255,0.7)"],
       transition: {
-        duration: 2,
+        duration: 2.5,
         repeat: Infinity,
         repeatType: "mirror",
         ease: "easeInOut"
@@ -328,11 +344,31 @@ function Summary() {
     }
   };
 
+  const floatVariants = {
+    animate: {
+      y: [-10, 10, -10],
+      transition: {
+        duration: 6,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-800 to-indigo-900 text-white p-4 sm:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-purple-800 text-white p-4 sm:p-8 relative overflow-hidden">
+      {/* Animated Background Blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 -left-20 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-0 -right-20 w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute -bottom-20 left-1/2 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
+      {/* Content Wrapper */}
+      <div className="relative z-10">
       {/* Navigation Bar - NavBack Style */}
       <motion.nav
-        className="bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 shadow-2xl rounded-2xl mb-8 px-4 sm:px-6 lg:px-8 py-4 sm:py-5 sticky top-0 z-50"
+        className="bg-gradient-to-r from-purple-600/90 via-purple-700/90 to-indigo-700/90 backdrop-blur-xl shadow-2xl rounded-2xl mb-8 px-4 sm:px-6 lg:px-8 py-4 sm:py-5 sticky top-0 z-50 border border-white/10"
         variants={navbarVariants}
         initial="hidden"
         animate="visible"
@@ -413,12 +449,27 @@ function Summary() {
         {!isChatOpen && (
           <motion.button
             initial={{ scale: 0, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
+            animate={{ 
+              scale: 1, 
+              opacity: 1,
+              boxShadow: [
+                "0 0 20px rgba(147, 51, 234, 0.5)",
+                "0 0 40px rgba(147, 51, 234, 0.8)",
+                "0 0 20px rgba(147, 51, 234, 0.5)"
+              ]
+            }}
             exit={{ scale: 0, opacity: 0 }}
-            whileHover={{ scale: 1.1 }}
+            whileHover={{ scale: 1.15, rotate: 5 }}
             whileTap={{ scale: 0.9 }}
             onClick={() => setIsChatOpen(true)}
-            className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full shadow-2xl flex items-center justify-center border-2 border-white hover:shadow-purple-500/50 transition-shadow duration-300"
+            transition={{
+              boxShadow: {
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }
+            }}
+            className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full shadow-2xl flex items-center justify-center border-2 border-white/30 backdrop-blur-sm"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -445,41 +496,64 @@ function Summary() {
             className="fixed bottom-6 right-6 z-50 w-96 h-[600px] bg-gray-900 bg-opacity-95 backdrop-blur-lg rounded-2xl shadow-2xl border border-purple-500 flex flex-col overflow-hidden"
           >
             {/* Chatbot Header */}
-            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 flex items-center justify-between border-b border-purple-500">
+            <div className="bg-gradient-to-r from-purple-600/95 to-indigo-600/95 backdrop-blur-md p-4 flex items-center justify-between border-b border-purple-400/30">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                    <path d="M9 10h.01"></path>
-                    <path d="M15 10h.01"></path>
-                  </svg>
-                </div>
+                <motion.div 
+                  className="w-12 h-12 bg-gradient-to-br from-white/30 to-white/10 rounded-full flex items-center justify-center shadow-lg border-2 border-white/20"
+                  animate={{
+                    rotate: [0, 5, -5, 0],
+                    scale: [1, 1.05, 1]
+                  }}
+                  transition={{
+                    duration: 3,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  <span className="text-2xl">🤖</span>
+                </motion.div>
                 <div>
-                  <h3 className="text-white font-bold text-lg">Chat Assistant</h3>
-                  <p className="text-purple-200 text-xs">Ask about your conversations</p>
+                  <h3 className="text-white font-bold text-lg flex items-center gap-2">
+                    Chat Assistant
+                    <motion.span
+                      animate={{ opacity: [1, 0.5, 1] }}
+                      transition={{ duration: 2, repeat: Infinity }}
+                      className="w-2 h-2 bg-green-400 rounded-full"
+                    />
+                  </h3>
+                  <p className="text-purple-200 text-xs">✨ Ask about your conversations</p>
                 </div>
               </div>
-              <button
+              <motion.button
                 onClick={() => setIsChatOpen(false)}
-                className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-colors"
+                className="text-white hover:bg-white/20 rounded-full p-2 transition-colors"
+                whileHover={{ scale: 1.1, rotate: 90 }}
+                whileTap={{ scale: 0.9 }}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
-              </button>
+              </motion.button>
             </div>
 
             {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
               {chatMessages.length === 0 ? (
-                <div className="text-center text-gray-400 py-8">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-3 opacity-50">
-                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                  </svg>
-                  <p className="text-sm">Start by asking a question!</p>
-                  <p className="text-xs mt-2 px-4">For example: "What did we talk about yesterday?"</p>
-                </div>
+                <motion.div 
+                  className="text-center text-gray-400 py-8"
+                  variants={floatVariants}
+                  animate="animate"
+                >
+                  <motion.div
+                    animate={{ scale: [1, 1.1, 1] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  >
+                    <span className="text-6xl mb-4 block">💬</span>
+                  </motion.div>
+                  <p className="text-sm font-medium">Start by asking a question!</p>
+                  <p className="text-xs mt-2 px-4 text-gray-500">For example: "What did we talk about yesterday?"</p>
+                </motion.div>
               ) : (
                 chatMessages.map((msg, idx) => (
                   <motion.div
@@ -555,11 +629,13 @@ function Summary() {
 
       {/* Control Panel */}
       <motion.div
-        className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 shadow-xl flex flex-col gap-6 max-w-3xl mx-auto border border-black"
+        className="bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-2xl p-6 mb-8 shadow-2xl flex flex-col gap-6 max-w-3xl mx-auto border border-white/20 relative overflow-hidden"
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ type: "spring", stiffness: 80, damping: 10, delay: 0.3 }}
       >
+        {/* Decorative gradient overlay */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-400 via-pink-400 to-indigo-400"></div>
         <div className="flex flex-col sm:flex-row gap-6">
           <motion.div variants={itemVariants} className="flex-1">
             <label htmlFor="personSelect" className="block text-gray-200 text-sm font-semibold mb-2">
@@ -569,7 +645,7 @@ function Summary() {
               id="personSelect"
               value={selectedPersonId}
               onChange={handlePersonChange}
-              className="w-full p-3 rounded-lg bg-gray-700 bg-opacity-50 border border-black text-white focus:ring-2 focus:ring-purple-400 focus:border-transparent transition duration-200 backdrop-blur-sm"
+              className="w-full p-3 rounded-xl bg-gray-800/50 backdrop-blur-md border border-white/10 text-white focus:ring-2 focus:ring-purple-400 focus:border-purple-400 transition-all duration-200 shadow-lg hover:border-white/20"
               disabled={isLoading || knownPersons.length === 0}
             >
               <option value="" className="bg-gray-800 text-gray-300">{t('selectPerson')}</option>
@@ -590,7 +666,7 @@ function Summary() {
               id="dateSelect"
               value={selectedDate}
               onChange={handleDateChange}
-              className="w-full p-3 rounded-lg bg-gray-700 bg-opacity-50 border border-black text-white focus:ring-2 focus:ring-purple-400 focus:border-transparent transition duration-200 backdrop-blur-sm"
+              className="w-full p-3 rounded-xl bg-gray-800/50 backdrop-blur-md border border-white/10 text-white focus:ring-2 focus:ring-purple-400 focus:border-purple-400 transition-all duration-200 shadow-lg hover:border-white/20"
               max={format(new Date(), 'yyyy-MM-dd')}
               disabled={isLoading}
             />
@@ -599,46 +675,44 @@ function Summary() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
             onClick={fetchDateSummary}
             disabled={isLoading || !selectedPersonId}
-            className="flex items-center justify-center gap-2 px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed border border-black"
+            className="flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold rounded-xl shadow-xl transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed border border-blue-400/30 relative overflow-hidden group"
           >
+            <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
             {isLoading ? (
-              <>
-                <span className="animate-pulse">{t('loading')}</span>
-              </>
+              <span className="relative animate-pulse">{t('loading')}</span>
             ) : (
               <>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="relative z-10 drop-shadow-lg">
                   <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                   <line x1="16" y1="2" x2="16" y2="6"></line>
                   <line x1="8" y1="2" x2="8" y2="6"></line>
                   <line x1="3" y1="10" x2="21" y2="10"></line>
                 </svg>
-                {t('getSummaryForSelectedDate')}
+                <span className="relative z-10">{t('getSummaryForSelectedDate')}</span>
               </>)}
           </motion.button>
 
           <motion.button
-            whileHover={{ scale: 1.05 }}
+            whileHover={{ scale: 1.05, y: -2 }}
             whileTap={{ scale: 0.95 }}
             onClick={fetchAllSummaries}
             disabled={isLoading || !selectedPersonId}
-            className="flex items-center justify-center gap-2 px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-lg transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed border border-black"
+            className="flex items-center justify-center gap-2 px-8 py-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl shadow-xl transition-all duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed border border-green-400/30 relative overflow-hidden group"
           >
+            <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
             {isLoading ? (
-              <>
-                <span className="animate-pulse">{t('loading')}</span>
-              </>
+              <span className="relative animate-pulse">{t('loading')}</span>
             ) : (
               <>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="relative z-10 drop-shadow-lg">
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
                   <polyline points="9 22 9 12 15 12 15 22"></polyline>
                 </svg>
-                {t('getAllConversationsSummary')}
+                <span className="relative z-10">{t('getAllConversationsSummary')}</span>
               </>
             )}
           </motion.button>
@@ -649,8 +723,8 @@ function Summary() {
       {summaryData && (
         <motion.div
           className={`
-            bg-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-2xl
-            max-w-4xl mx-auto mt-8 border border-black
+            bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl p-8 shadow-2xl
+            max-w-4xl mx-auto mt-8 border border-white/20 relative overflow-hidden
           `}
           variants={containerVariants}
           initial="hidden"
@@ -658,6 +732,9 @@ function Summary() {
           exit="exit"
           key={summaryData.date || 'all'}
         >
+          {/* Decorative corner accents */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-500/20 to-transparent rounded-bl-full"></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-indigo-500/20 to-transparent rounded-tr-full"></div>
           <div className="border-b border-gray-600 pb-4 mb-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
             <h2 className="text-3xl font-extrabold text-white mb-2 sm:mb-0">
               {summaryData.date
@@ -683,10 +760,12 @@ function Summary() {
           <div className="space-y-8">
             {/* Key Insights Section */}
             <motion.div
-              className="bg-gray-800 bg-opacity-30 rounded-xl p-6 shadow-inner border border-black backdrop-blur-sm"
+              className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-purple-500/30 relative overflow-hidden"
               variants={itemVariants}
+              whileHover={{ scale: 1.01 }}
             >
-              <h3 className="text-2xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"></div>
+              <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-4 flex items-center gap-2">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-300">
                   <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
@@ -707,10 +786,12 @@ function Summary() {
             {/* Original Messages Section */}
             {summaryData.original_messages && summaryData.original_messages.length > 0 && (
               <motion.div
-                className="bg-gray-800 bg-opacity-30 rounded-xl p-6 shadow-inner border border-black backdrop-blur-sm"
+                className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-blue-500/30 relative overflow-hidden"
                 variants={itemVariants}
+                whileHover={{ scale: 1.01 }}
               >
-                <h3 className="text-2xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-cyan-500 to-blue-500"></div>
+                <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 mb-4 flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-300">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
                   </svg>
@@ -747,10 +828,12 @@ function Summary() {
             {/* Conversation History Section (for "All Conversations" view) */}
             {summaryData.messages_by_date && Object.keys(summaryData.messages_by_date).length > 0 && (
               <motion.div
-                className="bg-gray-800 bg-opacity-30 rounded-xl p-6 shadow-inner border border-black backdrop-blur-sm"
+                className="bg-gradient-to-br from-gray-800/40 to-gray-900/40 backdrop-blur-md rounded-2xl p-6 shadow-xl border border-green-500/30 relative overflow-hidden"
                 variants={itemVariants}
+                whileHover={{ scale: 1.01 }}
               >
-                <h3 className="text-2xl font-bold text-green-400 mb-4 flex items-center gap-2">
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-green-500 via-emerald-500 to-green-500"></div>
+                <h3 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-emerald-400 mb-4 flex items-center gap-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-green-300">
                     <circle cx="12" cy="12" r="10"></circle>
                     <polyline points="12 6 12 12 16 14"></polyline>
@@ -832,6 +915,7 @@ function Summary() {
           <p className="text-sm text-center mt-2">{t('noSummaryDataFound')}</p>
         </motion.div>
       )}
+      </div>
     </div>
   );
 }

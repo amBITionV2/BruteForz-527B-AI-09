@@ -461,21 +461,36 @@ function Contacts() {
   return (
     <AnimatePresence>
       <motion.div
-        className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-100 py-8 px-4 sm:px-6 lg:px-8 relative"
+        className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 text-gray-100 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
         variants={pageVariants}
         initial="initial"
         animate="animate"
         exit="exit"
       >
-        <NavBack className="absolute top-4 left-4 z-10 text-white" />
+        {/* Animated Background Blobs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute top-0 left-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+          <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+        </div>
+
+        {/* Content Wrapper */}
+        <div className="relative z-10">
+          <NavBack className="absolute top-4 left-4 z-10 text-white" />
 
         <motion.div
-          className="contacts-container w-full max-w-4xl mx-auto bg-gray-800 bg-opacity-80 rounded-xl shadow-2xl p-6 sm:p-8 relative"
+          className="contacts-container w-full max-w-6xl mx-auto bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-10 relative border border-white/20 overflow-hidden"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1, duration: 0.6 }}
         >
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-center text-red-500 mb-8 tracking-wide">{t("myContacts")}</h1>
+          {/* Decorative corner accents */}
+          <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-transparent rounded-bl-full"></div>
+          <div className="absolute bottom-0 left-0 w-32 h-32 bg-gradient-to-tr from-pink-400/20 to-transparent rounded-tr-full"></div>
+          
+          <h1 className="text-4xl sm:text-5xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 mb-8 tracking-wide drop-shadow-lg">
+            📞 {t("myContacts")}
+          </h1>
 
           <AnimatePresence>
             {error && (
@@ -505,11 +520,13 @@ function Contacts() {
           </AnimatePresence>
 
           <motion.button
-            className="w-full flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg shadow-md mb-8 transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+            className="w-full flex items-center justify-center bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold py-4 px-6 rounded-xl shadow-xl mb-8 transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 relative overflow-hidden group"
             onClick={() => setShowAddModal(true)}
             {...buttonHoverTap}
           >
-            <span className="text-2xl mr-2">+</span> {t("addNewContact")}
+            <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+            <span className="relative z-10 text-2xl mr-3">➕</span>
+            <span className="relative z-10 text-lg">{t("addNewContact")}</span>
           </motion.button>
 
           {loading ? (
@@ -527,7 +544,7 @@ function Contacts() {
               ) : (
                 contacts.map((contact) => (
                   <motion.div
-                    className="contact-card bg-gray-700 rounded-lg shadow-lg overflow-hidden flex flex-col items-center p-6 relative"
+                    className="contact-card bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-md rounded-2xl shadow-xl overflow-hidden flex flex-col items-center p-6 relative border border-white/10 hover:border-purple-400/50 transition-all duration-300"
                     key={contact._id}
                     variants={cardVariants}
                     initial="initial"
@@ -535,52 +552,74 @@ function Contacts() {
                     whileHover="whileHover"
                     whileTap="whileTap"
                   >
+                    {/* Status indicator bar */}
+                    <div className={`absolute top-0 left-0 right-0 h-1.5 ${contact.isEmergency ? 'bg-gradient-to-r from-red-500 via-orange-500 to-red-500' : 'bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500'}`}></div>
                     <div className="contact-photo mb-4 relative">
                       {contact.photo_url ? (
-                        <img src={contact.photo_url} alt={contact.name} className="w-24 h-24 rounded-full object-cover border-4 border-blue-500" />
+                        <div className="relative">
+                          <img src={contact.photo_url} alt={contact.name} className="w-28 h-28 rounded-full object-cover border-4 border-gradient-to-r from-blue-400 to-purple-400 shadow-lg" style={{borderImage: 'linear-gradient(to right, rgb(96, 165, 250), rgb(168, 85, 247)) 1'}} />
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-r from-blue-400/20 to-purple-400/20 animate-pulse"></div>
+                        </div>
                       ) : (
-                        <div className="w-24 h-24 rounded-full bg-blue-500 flex items-center justify-center text-white text-4xl font-bold border-4 border-blue-500">
+                        <div className="w-28 h-28 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center text-white text-4xl font-bold border-4 border-white/20 shadow-lg">
                           {contact.name.charAt(0)}
                         </div>
                       )}
                       {contact.isEmergency && (
-                        <span className="emergency-badge absolute top-0 right-0 bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded-full transform translate-x-1/4 -translate-y-1/4 shadow-md">
-                          {t("emergency")}
-                        </span>
+                        <motion.span 
+                          className="emergency-badge absolute -top-1 -right-1 bg-gradient-to-r from-red-600 to-orange-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white"
+                          animate={{ scale: [1, 1.1, 1] }}
+                          transition={{ duration: 2, repeat: Infinity }}
+                        >
+                          ⚠️ {t("emergency")}
+                        </motion.span>
                       )}
                     </div>
                     <div className="contact-info text-center flex-grow">
-                      <h3 className="text-xl font-bold text-white mb-2">{contact.name}</h3>
-                      {contact.email && <p className="text-gray-300 text-sm break-all"><strong>{t("email")}:</strong> {contact.email}</p>}
-                      {contact.phone && <p className="text-gray-300 text-sm"><strong>{t("phone")}:</strong> {contact.phone}</p>}
+                      <h3 className="text-2xl font-bold text-white mb-3">{contact.name}</h3>
+                      {contact.email && (
+                        <p className="text-gray-200 text-sm break-all bg-white/10 px-3 py-1.5 rounded-lg mb-2 backdrop-blur-sm">
+                          <strong className="text-blue-300">📧</strong> {contact.email}
+                        </p>
+                      )}
+                      {contact.phone && (
+                        <p className="text-gray-200 text-sm bg-white/10 px-3 py-1.5 rounded-lg mb-2 backdrop-blur-sm">
+                          <strong className="text-green-300">📞</strong> {contact.phone}
+                        </p>
+                      )}
                       {contact.user_name && (
-                        <p className="added-by text-gray-400 text-xs mt-2">{t("addedBy")}: {contact.user_name}</p>
+                        <p className="added-by text-gray-300 text-xs mt-3 bg-white/5 px-2 py-1 rounded-full inline-block">
+                          👤 {t("addedBy")}: {contact.user_name}
+                        </p>
                       )}
                     </div>
-                    <div className="contact-actions flex space-x-2 mt-4">
+                    <div className="contact-actions flex space-x-3 mt-6">
                       <motion.button
-                        className="edit-btn p-2 bg-yellow-500 hover:bg-yellow-600 rounded-full text-white transition-colors duration-200"
+                        className="edit-btn p-3 bg-gradient-to-br from-yellow-500 to-orange-500 hover:from-yellow-600 hover:to-orange-600 rounded-xl text-white transition-all duration-200 shadow-lg border border-yellow-400/30"
                         onClick={() => handleEditButtonClick(contact)}
                         title={t("editContact")}
-                        {...buttonHoverTap}
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        whileTap={{ scale: 0.9 }}
                       >
-                        <i className="edit-icon">✏️</i>
+                        <span className="text-xl">✏️</span>
                       </motion.button>
                       <motion.button
-                        className="view-conversation-btn p-2 bg-purple-600 hover:bg-purple-700 rounded-full text-white transition-colors duration-200"
+                        className="view-conversation-btn p-3 bg-gradient-to-br from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-xl text-white transition-all duration-200 shadow-lg border border-purple-400/30"
                         onClick={() => handleViewConversation(contact)}
                         title={t("viewConversation")}
-                        {...buttonHoverTap}
+                        whileHover={{ scale: 1.1, y: -2 }}
+                        whileTap={{ scale: 0.9 }}
                       >
-                        <i className="conversation-icon">💬</i>
+                        <span className="text-xl">💬</span>
                       </motion.button>
                       <motion.button
-                        className="delete-btn p-2 bg-red-600 hover:bg-red-700 rounded-full text-white text-lg font-bold transition-colors duration-200"
+                        className="delete-btn p-3 bg-gradient-to-br from-red-600 to-pink-600 hover:from-red-700 hover:to-pink-700 rounded-xl text-white text-xl font-bold transition-all duration-200 shadow-lg border border-red-400/30"
                         onClick={() => handleDeleteContact(contact._id)}
                         title={t("deleteContact")}
-                        {...buttonHoverTap}
+                        whileHover={{ scale: 1.1, rotate: -5 }}
+                        whileTap={{ scale: 0.9 }}
                       >
-                        ×
+                        🗑️
                       </motion.button>
                     </div>
                   </motion.div>
@@ -600,18 +639,23 @@ function Contacts() {
               exit={{ opacity: 0 }}
             >
               <motion.div
-                className="modal bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-md border border-gray-700"
+                className="modal bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 w-full max-w-md border border-purple-500/30 relative overflow-hidden"
                 variants={modalVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
               >
+                {/* Decorative gradient bar */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500"></div>
                 <div className="modal-header flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-white">{t("addNewContact")}</h2>
+                  <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400">
+                    ➕ {t("addNewContact")}
+                  </h2>
                   <motion.button
-                    className="close-btn text-gray-400 hover:text-white text-3xl leading-none"
+                    className="close-btn text-gray-400 hover:text-white text-3xl leading-none transition-colors"
                     onClick={() => setShowAddModal(false)}
-                    {...buttonHoverTap}
+                    whileHover={{ scale: 1.2, rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     &times;
                   </motion.button>
@@ -619,7 +663,9 @@ function Contacts() {
 
                 <form onSubmit={handleAddContact}>
                   <div className="form-group mb-4">
-                    <label htmlFor="name" className="block text-gray-300 text-sm font-semibold mb-2">{t("name")} *</label>
+                    <label htmlFor="name" className="block text-gray-200 text-sm font-bold mb-2 flex items-center gap-2">
+                      <span className="text-blue-400">👤</span> {t("name")} *
+                    </label>
                     <input
                       type="text"
                       id="name"
@@ -627,13 +673,15 @@ function Contacts() {
                       value={newContact.name}
                       onChange={(e) => handleInputChange(e, false)}
                       placeholder={t("contactName")}
-                      className="w-full px-4 py-2 bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:border-blue-500"
+                      className="w-full px-4 py-3 bg-gray-700/50 backdrop-blur-sm text-white rounded-xl border-2 border-gray-600 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/50 transition-all duration-200"
                       required
                     />
                   </div>
 
                   <div className="form-group mb-4">
-                    <label htmlFor="email" className="block text-gray-300 text-sm font-semibold mb-2">{t("email")}</label>
+                    <label htmlFor="email" className="block text-gray-200 text-sm font-bold mb-2 flex items-center gap-2">
+                      <span className="text-green-400">📧</span> {t("email")}
+                    </label>
                     <input
                       type="email"
                       id="email"
@@ -641,12 +689,14 @@ function Contacts() {
                       value={newContact.email}
                       onChange={(e) => handleInputChange(e, false)}
                       placeholder={t("emailAddress")}
-                      className="w-full px-4 py-2 bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:border-blue-500"
+                      className="w-full px-4 py-3 bg-gray-700/50 backdrop-blur-sm text-white rounded-xl border-2 border-gray-600 focus:outline-none focus:border-green-500 focus:ring-2 focus:ring-green-500/50 transition-all duration-200"
                     />
                   </div>
 
                   <div className="form-group mb-4">
-                    <label htmlFor="phone" className="block text-gray-300 text-sm font-semibold mb-2">{t("phoneNumber")}</label>
+                    <label htmlFor="phone" className="block text-gray-200 text-sm font-bold mb-2 flex items-center gap-2">
+                      <span className="text-purple-400">📞</span> {t("phoneNumber")}
+                    </label>
                     <input
                       type="tel"
                       id="phone"
@@ -654,56 +704,76 @@ function Contacts() {
                       value={newContact.phone}
                       onChange={(e) => handleInputChange(e, false)}
                       placeholder={t("phoneNumber")}
-                      className="w-full px-4 py-2 bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:border-blue-500"
+                      className="w-full px-4 py-3 bg-gray-700/50 backdrop-blur-sm text-white rounded-xl border-2 border-gray-600 focus:outline-none focus:border-purple-500 focus:ring-2 focus:ring-purple-500/50 transition-all duration-200"
                     />
                   </div>
 
-                  <div className="form-group checkbox-group mb-4 flex items-center">
+                  <div className="form-group checkbox-group mb-4 flex items-center bg-red-500/10 p-3 rounded-xl border border-red-500/30">
                     <input
                       type="checkbox"
                       id="isEmergency"
                       name="isEmergency"
                       checked={newContact.isEmergency}
                       onChange={(e) => handleInputChange(e, false)}
-                      className="mr-2 h-5 w-5 text-blue-600 rounded focus:ring-blue-500"
+                      className="mr-3 h-5 w-5 text-red-600 rounded focus:ring-red-500 cursor-pointer"
                     />
-                    <label htmlFor="isEmergency" className="text-gray-300 text-sm font-semibold">{t("emergencyContact")}</label>
+                    <label htmlFor="isEmergency" className="text-gray-200 text-sm font-bold cursor-pointer flex items-center gap-2">
+                      <span className="text-red-400">⚠️</span> {t("emergencyContact")}
+                    </label>
                   </div>
 
                   <div className="form-group mb-6">
-                    <label htmlFor="photo" className="block text-gray-300 text-sm font-semibold mb-2">{t("photo")}</label>
+                    <label htmlFor="photo" className="block text-gray-200 text-sm font-bold mb-2 flex items-center gap-2">
+                      <span className="text-pink-400">📷</span> {t("photo")}
+                    </label>
                     <input
                       type="file"
                       id="photo"
                       name="photo"
                       onChange={(e) => handleFileChange(e, false)}
                       accept="image/*"
-                      className="w-full text-gray-300 text-sm file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-500 file:text-white hover:file:bg-blue-600 transition-all duration-300"
+                      className="w-full text-gray-200 text-sm file:mr-4 file:py-3 file:px-5 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-gradient-to-r file:from-blue-600 file:to-purple-600 file:text-white hover:file:from-blue-700 hover:file:to-purple-700 file:transition-all file:duration-300 file:cursor-pointer"
                     />
                     {newContact.photo_url && (
-                      <div className="preview-photo mt-4">
-                        <img src={newContact.photo_url} alt={t("preview")} className="max-w-[100px] max-h-[100px] rounded-full object-cover mx-auto" />
-                      </div>
+                      <motion.div 
+                        className="preview-photo mt-4 flex justify-center"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <img src={newContact.photo_url} alt={t("preview")} className="max-w-[120px] max-h-[120px] rounded-full object-cover border-4 border-purple-500 shadow-xl" />
+                      </motion.div>
                     )}
                   </div>
 
-                  <div className="form-actions flex justify-end space-x-4">
+                  <div className="form-actions flex justify-end space-x-4 pt-4 border-t border-gray-700">
                     <motion.button
                       type="button"
                       onClick={() => setShowAddModal(false)}
                       disabled={uploadingImage}
-                      className="px-6 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-md font-semibold transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-                      {...buttonHoverTap}
+                      className="px-6 py-3 bg-gray-700 hover:bg-gray-600 text-white rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed border border-gray-600"
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      {t("cancel")}
+                      ❌ {t("cancel")}
                     </motion.button>
                     <motion.button
                       type="submit"
-                      className="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-semibold transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl font-bold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg relative overflow-hidden group"
                       disabled={uploadingImage || loading}
-                      {...buttonHoverTap}
+                      whileHover={{ scale: 1.05, y: -2 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      {uploadingImage ? t("uploading") : loading ? t("addingContact") : t("addContact")}
+                      <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                      <span className="relative z-10">
+                        {uploadingImage ? (
+                          <>💾 {t("uploading")}</>
+                        ) : loading ? (
+                          <>⏳ {t("addingContact")}</>
+                        ) : (
+                          <>✨ {t("addContact")}</>
+                        )}
+                      </span>
                     </motion.button>
                   </div>
                 </form>
@@ -722,18 +792,23 @@ function Contacts() {
               exit={{ opacity: 0 }}
             >
               <motion.div
-                className="modal bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-md border border-gray-700"
+                className="modal bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 w-full max-w-md border border-yellow-500/30 relative overflow-hidden"
                 variants={modalVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
               >
+                {/* Decorative gradient bar */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-500 via-orange-500 to-yellow-500"></div>
                 <div className="modal-header flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-white">{t("editContact")}</h2>
+                  <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">
+                    ✏️ {t("editContact")}
+                  </h2>
                   <motion.button
-                    className="close-btn text-gray-400 hover:text-white text-3xl leading-none"
+                    className="close-btn text-gray-400 hover:text-white text-3xl leading-none transition-colors"
                     onClick={() => setShowEditModal(false)}
-                    {...buttonHoverTap}
+                    whileHover={{ scale: 1.2, rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     &times;
                   </motion.button>
@@ -845,18 +920,23 @@ function Contacts() {
               exit={{ opacity: 0 }}
             >
               <motion.div
-                className="modal conversation-modal bg-gray-800 rounded-xl shadow-2xl p-6 w-full max-w-lg h-[80vh] flex flex-col border border-gray-700"
+                className="modal conversation-modal bg-gradient-to-br from-gray-900/95 to-gray-800/95 backdrop-blur-xl rounded-2xl shadow-2xl p-8 w-full max-w-2xl h-[85vh] flex flex-col border border-purple-500/30 relative overflow-hidden"
                 variants={modalVariants}
                 initial="hidden"
                 animate="visible"
                 exit="exit"
               >
+                {/* Decorative gradient bar */}
+                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-500 via-pink-500 to-purple-500"></div>
                 <div className="modal-header flex justify-between items-center mb-6 pb-4 border-b border-gray-700">
-                  <h2 className="text-2xl font-bold text-white">{t("conversationWith")} {selectedContact.name}</h2>
+                  <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400">
+                    💬 {t("conversationWith")} {selectedContact.name}
+                  </h2>
                   <motion.button
-                    className="close-btn text-gray-400 hover:text-white text-3xl leading-none"
+                    className="close-btn text-gray-400 hover:text-white text-3xl leading-none transition-colors"
                     onClick={() => setShowConversationModal(false)}
-                    {...buttonHoverTap}
+                    whileHover={{ scale: 1.2, rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
                   >
                     &times;
                   </motion.button>
@@ -866,10 +946,19 @@ function Contacts() {
                   {selectedContact.conversation_data && selectedContact.conversation_data.length > 0 ? (
                     <div className="conversation-messages space-y-4">
                       {selectedContact.conversation_data.map((message, index) => (
-                        <div key={index} className="message p-3 rounded-lg bg-gray-700 text-white shadow-md">
-                          <div className="message-text text-base">{message.text}</div>
-                          <div className="message-timestamp text-xs text-gray-400 mt-1 text-right">{formatTimestamp(message.timestamp)}</div>
-                        </div>
+                        <motion.div 
+                          key={index} 
+                          className="message p-4 rounded-xl bg-gradient-to-br from-purple-700/50 to-indigo-700/50 backdrop-blur-sm text-white shadow-lg border border-purple-500/30"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                          whileHover={{ scale: 1.02, x: 5 }}
+                        >
+                          <div className="message-text text-base leading-relaxed">{message.text}</div>
+                          <div className="message-timestamp text-xs text-purple-200 mt-2 text-right flex items-center justify-end gap-1">
+                            <span>🕒</span> {formatTimestamp(message.timestamp)}
+                          </div>
+                        </motion.div>
                       ))}
                     </div>
                   ) : (
@@ -879,17 +968,20 @@ function Contacts() {
 
                 <div className="modal-footer mt-6 pt-4 border-t border-gray-700 flex justify-end">
                   <motion.button
-                    className="close-modal-btn px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md font-semibold transition duration-300"
+                    className="close-modal-btn px-8 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-bold transition-all duration-300 shadow-lg relative overflow-hidden group"
                     onClick={() => setShowConversationModal(false)}
-                    {...buttonHoverTap}
+                    whileHover={{ scale: 1.05, y: -2 }}
+                    whileTap={{ scale: 0.95 }}
                   >
-                    {t("close")}
+                    <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                    <span className="relative z-10">✔️ {t("close")}</span>
                   </motion.button>
                 </div>
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
+        </div>
       </motion.div>
     </AnimatePresence>
   );
