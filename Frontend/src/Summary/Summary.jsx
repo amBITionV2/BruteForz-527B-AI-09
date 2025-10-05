@@ -297,33 +297,96 @@ function Summary() {
     visible: { opacity: 1, y: 0 }
   };
 
+  const navbarVariants = {
+    hidden: { opacity: 0, y: -50 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.6,
+        ease: "easeOut",
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const navItemVariants = {
+    hidden: { opacity: 0, y: -20 },
+    visible: { opacity: 1, y: 0 }
+  };
+
+  const brainGlowVariants = {
+    initial: { textShadow: "0 0px 0px rgba(255,255,255,0.7)" },
+    animate: {
+      textShadow: ["0 0 0px rgba(255,255,255,0.7)", "0 0 8px rgba(255,255,255,0.7)", "0 0 0px rgba(255,255,255,0.7)"],
+      transition: {
+        duration: 2,
+        repeat: Infinity,
+        repeatType: "mirror",
+        ease: "easeInOut"
+      }
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-800 to-indigo-900 text-white p-4 sm:p-8">
-      {/* Navigation Bar */}
+      {/* Navigation Bar - NavBack Style */}
       <motion.nav
-        className="flex flex-col sm:flex-row justify-between items-center bg-white/10 backdrop-blur-md rounded-2xl p-4 mb-8 shadow-lg border border-black"
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ type: "spring", stiffness: 100, damping: 15, delay: 0.1 }}
+        className="bg-gradient-to-r from-purple-600 via-purple-700 to-indigo-700 shadow-2xl rounded-2xl mb-8 px-4 sm:px-6 lg:px-8 py-4 sm:py-5 sticky top-0 z-50"
+        variants={navbarVariants}
+        initial="hidden"
+        animate="visible"
       >
-        <h1 className="text-3xl font-extrabold text-white mb-4 sm:mb-0">{t('conversationInsights')}</h1>
-        <div className="flex gap-4">
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleDashboardClick}
-            className="px-6 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg shadow-md transition duration-300 ease-in-out text-white font-semibold border border-black"
-          >
-            {t('dashboard')}
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleLogoutClick}
-            className="px-6 py-2 bg-red-600 hover:bg-red-700 rounded-lg shadow-md transition duration-300 ease-in-out text-white font-semibold border border-black"
-          >
-            {t('logout')}
-          </motion.button>
+        <div className="flex justify-between items-center">
+          {/* Left section: Back/Home button */}
+          <motion.div className="flex items-center space-x-2 sm:space-x-3" variants={navItemVariants}>
+            <motion.button
+              onClick={handleDashboardClick}
+              className="flex items-center space-x-2 bg-white/20 hover:bg-white/30 backdrop-blur-sm px-4 py-3 rounded-xl text-white font-semibold transition-all duration-300 border-2 border-white/30 shadow-lg text-base sm:text-lg"
+              whileHover={{ scale: 1.05, boxShadow: "0 8px 16px rgba(0,0,0,0.2)" }}
+              whileTap={{ scale: 0.95 }}
+              aria-label="Back to Dashboard"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 sm:w-6 sm:h-6">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+              </svg>
+              <span className="hidden sm:inline">{t('dashboard')}</span>
+            </motion.button>
+          </motion.div>
+
+          {/* Center section: App Brand */}
+          <motion.div className="flex items-center space-x-3" variants={navItemVariants}>
+            <motion.span
+              className="text-5xl sm:text-6xl"
+              variants={brainGlowVariants}
+              initial="initial"
+              animate="animate"
+            >
+              🧠
+            </motion.span>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-wide drop-shadow-lg">
+              EchoMind
+            </h1>
+          </motion.div>
+
+          {/* Right section: Logout */}
+          <motion.div className="flex items-center space-x-3 sm:space-x-4" variants={navItemVariants}>
+            <motion.button
+              className="flex items-center space-x-2 px-4 sm:px-5 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl shadow-lg transition-all duration-300 text-base sm:text-lg border-2 border-red-400"
+              onClick={handleLogoutClick}
+              whileHover={{ scale: 1.05, boxShadow: "0 8px 16px rgba(220, 38, 38, 0.4)" }}
+              whileTap={{ scale: 0.95 }}
+              aria-label="Logout"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 sm:w-6 sm:h-6">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                <polyline points="16 17 21 12 16 7"></polyline>
+                <line x1="21" y1="12" x2="9" y2="12"></line>
+              </svg>
+              <span className="hidden sm:inline">{t('logout')}</span>
+            </motion.button>
+          </motion.div>
         </div>
       </motion.nav>
 
