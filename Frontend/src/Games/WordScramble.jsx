@@ -197,33 +197,46 @@ function WordScramble() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-100 py-8 px-4 sm:px-6 lg:px-8 relative"
+      className="min-h-screen bg-gradient-to-br from-purple-900 via-indigo-900 to-blue-900 text-gray-100 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
       variants={pageVariants}
       initial="initial"
       animate="animate"
       exit="exit"
     >
+      {/* Animated Background Blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-yellow-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
+      <div className="relative z-10">
       <GameNav user={user} />
 
       <div className="flex justify-between items-center max-w-4xl mx-auto mb-8 px-4">
-        <Link to="/games" className="flex items-center space-x-1 text-blue-400 hover:text-blue-600 transition-colors duration-300 text-sm md:text-base">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <Link to="/games" className="flex items-center space-x-2 text-yellow-300 hover:text-yellow-400 transition-colors duration-300 text-sm md:text-base font-semibold">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          <span>Back to Games</span>
+          <span>⬅️ Back to Games</span>
         </Link>
-        <div className="text-lg font-semibold text-purple-400">
+        <div className="text-xl font-extrabold bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
           Score: <span className="text-white">{score}</span>
         </div>
       </div>
 
       <motion.div
-        className="max-w-md mx-auto text-center bg-gray-800 bg-opacity-70 p-6 rounded-lg shadow-xl border border-gray-700"
+        className="max-w-md mx-auto text-center bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/20 relative overflow-hidden"
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.6 }}
       >
-        <h2 className="text-3xl font-bold text-purple-500 mb-6">Word Scramble</h2>
+        {/* Decorative gradient bar */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-yellow-500 via-orange-500 to-red-500"></div>
+        
+        <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-orange-400 to-red-400 mb-6 drop-shadow-lg">
+          🔤 Word Scramble
+        </h2>
 
         <AnimatePresence mode="wait">
           {gameState === 'idle' && (
@@ -235,14 +248,15 @@ function WordScramble() {
               exit="exit"
               className="space-y-4 mb-6"
             >
-              <p className="text-gray-300">Unscramble the letters to form a valid word.</p>
-              <p className="text-gray-300">You have 60 seconds to solve as many words as you can!</p>
+              <p className="text-purple-200 text-lg font-medium">Unscramble the letters to form a valid word.</p>
+              <p className="text-purple-200 text-lg font-medium">You have 60 seconds to solve as many words as you can!</p>
               <motion.button
-                className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                className="px-8 py-4 bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white font-bold rounded-xl shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-transparent relative overflow-hidden group"
                 onClick={startGame}
                 {...buttonHoverTap}
               >
-                Start Game
+                <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                <span className="relative z-10">🎮 Start Game</span>
               </motion.button>
             </motion.div>
           )}
@@ -256,16 +270,19 @@ function WordScramble() {
               exit="exit"
               className="space-y-4 mb-6"
             >
-              <h3 className="text-2xl font-bold text-purple-500">Time's Up!</h3>
-              <p className="text-lg text-gray-300">Your final score: <span className="text-white font-bold">{score}</span></p>
-              {scoreSaved && <p className="text-green-400 font-semibold">Score saved successfully!</p>}
-              {saveError && <p className="text-red-400 font-semibold">Error: {saveError}</p>}
+              <h3 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400">
+                ⏰ Time's Up!
+              </h3>
+              <p className="text-xl text-purple-200 font-bold">Your final score: <span className="text-white text-2xl">{score}</span></p>
+              {scoreSaved && <p className="text-green-300 font-bold text-lg">✅ Score saved successfully!</p>}
+              {saveError && <p className="text-red-300 font-bold text-lg">❌ Error: {saveError}</p>}
               <motion.button
-                className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                className="px-8 py-4 bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white font-bold rounded-xl shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-transparent relative overflow-hidden group"
                 onClick={startGame}
                 {...buttonHoverTap}
               >
-                Play Again
+                <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                <span className="relative z-10">🔄 Play Again</span>
               </motion.button>
             </motion.div>
           )}
@@ -279,8 +296,8 @@ function WordScramble() {
               exit="exit"
               className="w-full"
             >
-              <div className="text-xl font-bold mb-4 text-red-400">
-                Time Remaining: <span className="font-extrabold text-white">{timer}</span> seconds
+              <div className="text-2xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400">
+                ⏱️ Time Remaining: <span className="text-white">{timer}</span> seconds
               </div>
 
               <AnimatePresence mode="wait">
@@ -289,7 +306,7 @@ function WordScramble() {
                   variants={scrambledWordVariants}
                   initial="hidden"
                   animate="visible"
-                  className="text-4xl font-extrabold my-4 tracking-widest text-purple-400 uppercase"
+                  className="text-5xl font-extrabold my-6 tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-yellow-300 via-orange-300 to-red-300 uppercase drop-shadow-lg"
                 >
                   {scrambledWord}
                 </motion.div>
@@ -302,23 +319,25 @@ function WordScramble() {
                   onChange={(e) => setUserInput(e.target.value)}
                   placeholder="Enter your answer"
                   autoFocus
-                  className="w-full p-3 text-lg border-2 border-purple-400 rounded-md outline-none text-center bg-gray-700 text-white placeholder-gray-400 focus:border-purple-600 focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-gray-700 transition-all duration-200"
+                  className="w-full p-4 text-xl border-2 border-yellow-400/50 rounded-xl outline-none text-center bg-white/10 backdrop-blur-sm text-white placeholder-purple-300 focus:border-yellow-400 focus:ring-2 focus:ring-yellow-500 focus:ring-offset-2 focus:ring-offset-transparent transition-all duration-200 font-bold"
                 />
                 <div className="flex gap-4 w-full">
                   <motion.button
                     type="submit"
-                    className="flex-1 bg-green-500 hover:bg-green-600 text-white font-bold rounded-md py-2 px-6 text-lg cursor-pointer transition-colors duration-300"
+                    className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl py-3 px-6 text-lg cursor-pointer transition-all duration-300 shadow-xl relative overflow-hidden group"
                     {...buttonHoverTap}
                   >
-                    Submit
+                    <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                    <span className="relative z-10">✓ Submit</span>
                   </motion.button>
                   <motion.button
                     type="button"
-                    className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-white font-bold rounded-md py-2 px-6 text-lg cursor-pointer transition-colors duration-300"
+                    className="flex-1 bg-gradient-to-r from-yellow-600 to-orange-600 hover:from-yellow-700 hover:to-orange-700 text-white font-bold rounded-xl py-3 px-6 text-lg cursor-pointer transition-all duration-300 shadow-xl relative overflow-hidden group"
                     onClick={skipWord}
                     {...buttonHoverTap}
                   >
-                    Skip
+                    <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                    <span className="relative z-10">⏭️ Skip</span>
                   </motion.button>
                 </div>
               </form>
@@ -331,9 +350,9 @@ function WordScramble() {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className={`mt-4 text-lg font-semibold ${feedback.includes('Correct') ? 'text-green-400' : 'text-red-400'}`}
+                    className={`mt-4 text-xl font-extrabold ${feedback.includes('Correct') ? 'text-green-300' : feedback.includes('skipped') ? 'text-orange-300' : 'text-red-300'}`}
                   >
-                    {feedback}
+                    {feedback.includes('Correct') ? '✅ ' : feedback.includes('skipped') ? '⏭️ ' : '❌ '}{feedback}
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -341,6 +360,7 @@ function WordScramble() {
           )}
         </AnimatePresence>
       </motion.div>
+      </div>
     </motion.div>
   );
 }

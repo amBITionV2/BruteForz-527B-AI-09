@@ -240,35 +240,54 @@ function VisualLocationMemory() {
 
   return (
     <motion.div
-      className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-black text-gray-100 py-8 px-4 sm:px-6 lg:px-8 relative"
+      className="min-h-screen bg-gradient-to-br from-orange-900 via-pink-900 to-purple-900 text-gray-100 py-8 px-4 sm:px-6 lg:px-8 relative overflow-hidden"
       variants={pageVariants}
       initial="initial"
       animate="animate"
       exit="exit"
     >
+      {/* Animated Background Blobs */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-orange-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+        <div className="absolute bottom-0 left-1/2 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-4000"></div>
+      </div>
+
+      <div className="relative z-10">
       <GameNav user={user} />
 
       <div className="flex justify-between items-center max-w-4xl mx-auto mb-8 px-4">
-        <Link to="/games" className="flex items-center space-x-1 text-blue-400 hover:text-blue-600 transition-colors duration-300 text-sm md:text-base">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 md:h-5 md:w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+        <Link to="/games" className="flex items-center space-x-2 text-orange-300 hover:text-orange-400 transition-colors duration-300 text-sm md:text-base font-semibold">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 md:h-6 md:w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
             <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
           </svg>
-          <span>Back to Games</span>
+          <span>⬅️ Back to Games</span>
         </Link>
-        <div className="flex items-center gap-2 text-sm font-semibold text-orange-400">
-          <span>Score: <span className="text-white">{score}</span></span>
-          <span>Level: <span className="text-white">{level}</span></span>
-          <span>Lives: <span className="text-white">{'💚'.repeat(remainingLives)}</span></span>
+        <div className="flex items-center gap-4 text-base font-extrabold">
+          <span className="bg-gradient-to-r from-orange-400 to-pink-400 bg-clip-text text-transparent">
+            Score: <span className="text-white">{score}</span>
+          </span>
+          <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+            Level: <span className="text-white">{level}</span>
+          </span>
+          <span className="text-pink-300">
+            Lives: <span className="text-white">{'💚'.repeat(remainingLives)}</span>
+          </span>
         </div>
       </div>
 
       <motion.div
-        className="max-w-md mx-auto text-center bg-gray-800 bg-opacity-70 p-6 rounded-lg shadow-xl border border-gray-700"
+        className="max-w-md mx-auto text-center bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-xl p-8 rounded-3xl shadow-2xl border border-white/20 relative overflow-hidden"
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.2, duration: 0.6 }}
       >
-        <h2 className="text-3xl font-bold text-orange-500 mb-6">Visual Location Memory</h2>
+        {/* Decorative gradient bar */}
+        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-orange-500 via-pink-500 to-purple-500"></div>
+        
+        <h2 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-pink-400 to-purple-400 mb-6 drop-shadow-lg">
+          🎯 Visual Location Memory
+        </h2>
 
         <AnimatePresence mode="wait">
           {gameState === 'idle' && (
@@ -280,14 +299,15 @@ function VisualLocationMemory() {
               exit="exit"
               className="space-y-4 mb-6"
             >
-              <p className="text-gray-300">Remember the locations of the stars shown on the grid.</p>
-              <p className="text-gray-300">After they disappear, click on the cells where you saw them.</p>
+              <p className="text-orange-200 text-lg font-medium">Remember the locations of the stars shown on the grid.</p>
+              <p className="text-orange-200 text-lg font-medium">After they disappear, click on the cells where you saw them.</p>
               <motion.button
-                className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                className="px-8 py-4 bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-700 hover:to-pink-700 text-white font-bold rounded-xl shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-transparent relative overflow-hidden group"
                 onClick={startGame}
                 {...buttonHoverTap}
               >
-                Start Game
+                <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                <span className="relative z-10">🎮 Start Game</span>
               </motion.button>
             </motion.div>
           )}
@@ -301,17 +321,20 @@ function VisualLocationMemory() {
               exit="exit"
               className="space-y-4 mb-6"
             >
-              <h3 className="text-2xl font-bold text-orange-500">Game Over!</h3>
-              <p className="text-lg text-gray-300">Your final score: <span className="text-white font-bold">{score}</span></p>
-              <p className="text-lg text-gray-300">You reached level: <span className="text-white font-bold">{level}</span></p>
-              {scoreSaved && <p className="text-green-400 font-semibold">Score saved successfully!</p>}
-              {saveError && <p className="text-red-400 font-semibold">Error: {saveError}</p>}
+              <h3 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-400">
+                🏁 Game Over!
+              </h3>
+              <p className="text-xl text-orange-200 font-bold">Your final score: <span className="text-white text-2xl">{score}</span></p>
+              <p className="text-xl text-pink-200 font-bold">You reached level: <span className="text-white text-2xl">{level}</span></p>
+              {scoreSaved && <p className="text-green-300 font-bold text-lg">✅ Score saved successfully!</p>}
+              {saveError && <p className="text-red-300 font-bold text-lg">❌ Error: {saveError}</p>}
               <motion.button
-                className="px-6 py-3 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                className="px-8 py-4 bg-gradient-to-r from-orange-600 to-pink-600 hover:from-orange-700 hover:to-pink-700 text-white font-bold rounded-xl shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 focus:ring-offset-transparent relative overflow-hidden group"
                 onClick={startGame}
                 {...buttonHoverTap}
               >
-                Play Again
+                <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                <span className="relative z-10">🔄 Play Again</span>
               </motion.button>
             </motion.div>
           )}
@@ -332,14 +355,14 @@ function VisualLocationMemory() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="text-xl font-bold mb-4 text-red-400"
+                  className="text-2xl font-extrabold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-red-400 to-orange-400"
                 >
-                  Memorize the star positions: <span className="font-extrabold text-white">{timer}</span> seconds
+                  ⏱️ Memorize the star positions: <span className="text-white">{timer}</span> seconds
                 </motion.div>
               </AnimatePresence>
 
               <motion.div
-                className="grid gap-2 mx-auto w-full max-w-xs md:max-w-sm aspect-square p-2 bg-gray-700 rounded-lg shadow-inner border border-gray-600"
+                className="grid gap-2 mx-auto w-full max-w-xs md:max-w-sm aspect-square p-4 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-2xl shadow-inner border border-white/20"
                 style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
                 initial="hidden"
                 animate="visible"
@@ -352,7 +375,7 @@ function VisualLocationMemory() {
                 {grid.map((hasObject, index) => (
                   <motion.div
                     key={index}
-                    className={`aspect-square bg-gray-600 rounded-md flex items-center justify-center text-2xl font-bold shadow-md border border-gray-500`}
+                    className={`aspect-square bg-gradient-to-br from-orange-700 to-pink-700 rounded-lg flex items-center justify-center text-3xl font-bold shadow-lg border-2 border-orange-500/30`}
                     variants={cellVariants}
                     initial="hidden"
                     animate={hasObject ? "hasObject" : "visible"} // Animate directly to hasObject if true
@@ -369,9 +392,9 @@ function VisualLocationMemory() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="text-lg font-semibold my-4 text-blue-400"
+                  className="text-xl font-extrabold my-6 text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-400"
                 >
-                  Remember where the stars are located!
+                  🌟 Remember where the stars are located!
                 </motion.div>
               </AnimatePresence>
             </motion.div>
@@ -393,14 +416,14 @@ function VisualLocationMemory() {
                   initial="hidden"
                   animate="visible"
                   exit="exit"
-                  className="text-lg font-semibold my-4 text-blue-400"
+                  className="text-xl font-extrabold my-6 text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-pink-400"
                 >
-                  <strong>Click on the cells where you saw the stars!</strong>
+                  <strong>👆 Click on the cells where you saw the stars!</strong>
                 </motion.div>
               </AnimatePresence>
 
               <motion.div
-                className="grid gap-2 mx-auto w-full max-w-xs md:max-w-sm aspect-square p-2 bg-gray-700 rounded-lg shadow-inner border border-gray-600"
+                className="grid gap-2 mx-auto w-full max-w-xs md:max-w-sm aspect-square p-4 bg-gradient-to-br from-white/10 to-white/5 backdrop-blur-sm rounded-2xl shadow-inner border border-white/20"
                 style={{ gridTemplateColumns: `repeat(${gridSize}, 1fr)` }}
                 initial="hidden"
                 animate="visible"
@@ -413,8 +436,8 @@ function VisualLocationMemory() {
                 {grid.map((_, index) => (
                   <motion.div
                     key={index}
-                    className={`aspect-square bg-gray-600 rounded-md flex items-center justify-center text-2xl font-bold shadow-md border border-gray-500
-                      ${playerSelections.includes(index) ? 'selected' : 'recall-cell'}
+                    className={`aspect-square bg-gradient-to-br from-orange-700 to-pink-700 rounded-lg flex items-center justify-center text-2xl font-bold shadow-lg border-2 cursor-pointer transition-all duration-200
+                      ${playerSelections.includes(index) ? 'border-green-400 from-green-600 to-emerald-600' : 'border-orange-500/30 hover:border-orange-400'}
                     `}
                     onClick={() => handleCellClick(index)}
                     variants={cellVariants}
@@ -436,25 +459,27 @@ function VisualLocationMemory() {
                     initial="hidden"
                     animate="visible"
                     exit="exit"
-                    className="mt-4 text-base italic text-gray-400"
+                    className="mt-6 text-lg font-bold text-orange-200"
                   >
-                    You've selected {playerSelections.length} cells.
+                    📍 You've selected {playerSelections.length} cells.
                     {correctLocations.length > 0 && ` (Need to select ${correctLocations.length} in total)`}
                   </motion.div>
                 )}
               </AnimatePresence>
 
               <motion.button
-                className="px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-bold rounded-lg shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-gray-800 mt-6"
+                className="px-8 py-4 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 text-white font-bold rounded-xl shadow-xl transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 focus:ring-offset-transparent mt-6 relative overflow-hidden group"
                 onClick={submitAnswers}
                 {...buttonHoverTap}
               >
-                Submit Answers
+                <span className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></span>
+                <span className="relative z-10">✓ Submit Answers</span>
               </motion.button>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
+      </div>
     </motion.div>
   );
 }
