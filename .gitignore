@@ -1,3 +1,6 @@
 .env
 venv/
 *.pyc
+arcface_r100.pth
+email_to_sms.log
+sms_sending.log
