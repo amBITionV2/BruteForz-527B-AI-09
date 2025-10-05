@@ -15,7 +15,6 @@ import Contacts from "./Contacts/Contacts.jsx";
 import Summary from "./Summary/Summary.jsx";
 import Combined from "./MedicationReminder/Combined.jsx";
 import GeofenceGuardian from "./GeofenceGuardian/GeofenceGuardian.jsx";
-import LanguageSwitcher from "./components/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import "./i18n"; // Import the i18n configuration
 
@@ -35,7 +34,6 @@ function App() {
 
   return (
     <div className="app">
-      {isAuthenticated && <LanguageSwitcher />}
       <Routes>
         <Route
           path="/"

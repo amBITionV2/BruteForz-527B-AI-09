@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion'; // Import motion
+import { motion, AnimatePresence } from 'framer-motion';
 
 const Signup = ({ onSignup }) => {
   const [formData, setFormData] = useState({
@@ -178,60 +178,81 @@ const Signup = ({ onSignup }) => {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-700 to-indigo-900 flex items-center justify-center p-4 overflow-hidden relative">
-      {/* Abstract background shapes/waves for visual interest - consistent with Login */}
-      <div className="absolute top-0 left-0 w-48 h-48 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-      <div className="absolute bottom-24 right-24 w-48 h-48 bg-indigo-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-      <div className="absolute top-20 right-0 w-36 h-36 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
+  // Variants for dropdown animation
+  const dropdownVariants = {
+    hidden: { opacity: 0, y: -10, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.2, ease: "easeOut" }
+    },
+    exit: {
+      opacity: 0,
+      y: -10,
+      scale: 0.95,
+      transition: { duration: 0.15, ease: "easeIn" }
+    }
+  };
 
-      {/* Main Form Wrapper - Framer Motion Animation */}
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-purple-700 via-indigo-800 to-indigo-900 flex items-center justify-center p-4 sm:p-6 overflow-hidden relative">
+      {/* Abstract background shapes - softened for minimal clutter */}
+      <div className="absolute top-0 left-0 w-64 h-64 bg-purple-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob"></div>
+      <div className="absolute bottom-0 right-0 w-72 h-72 bg-indigo-400 rounded-full mix-blend-multiply filter blur-2xl opacity-10 animate-blob animation-delay-2000"></div>
+      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl opacity-5 animate-blob animation-delay-4000"></div>
+
+      {/* Main Form Wrapper - Enhanced for better readability */}
       <motion.div
-        className="relative z-10 bg-[#766363] bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-2xl shadow-xl p-6 sm:p-8 w-full max-w-sm border border-white border-opacity-20"
+        className="relative z-10 bg-white bg-opacity-95 backdrop-filter backdrop-blur-xl rounded-3xl shadow-2xl p-8 sm:p-10 md:p-12 w-full max-w-md lg:max-w-2xl border-2 border-purple-200"
         variants={formCardVariants}
         initial="hidden"
         animate="visible"
       >
-        <div className="flex flex-col items-center mb-6">
-          {/* Brain Logo - Framer Motion Animation */}
+        <div className="flex flex-col items-center mb-8">
+          {/* Brain Logo - Enhanced size */}
           <motion.div
-            className="relative mb-4"
+            className="relative mb-6"
             variants={brainContainerVariants}
           >
             <motion.div
-              className="text-6xl text-white drop-shadow-lg"
+              className="text-7xl sm:text-8xl text-purple-600 drop-shadow-2xl"
               variants={brainEmojiVariants}
               animate="pulse"
             >
               🧠
             </motion.div>
             <motion.div
-              className="absolute inset-0 bg-blue-400 rounded-full"
+              className="absolute inset-0 bg-purple-400 rounded-full filter blur-xl"
               variants={brainGlowVariants}
               animate="glow"
             ></motion.div>
           </motion.div>
-          <motion.h1 className="text-4xl font-extrabold text-white mb-2 tracking-wide" variants={textVariants}>EchoMind</motion.h1>
+          <motion.h1 className="text-5xl sm:text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 mb-3 tracking-wide" variants={textVariants}>
+            EchoMind
+          </motion.h1>
+          <motion.p className="text-gray-600 text-lg sm:text-xl text-center font-medium" variants={textVariants}>
+            Join us today! Create your account
+          </motion.p>
         </div>
 
-        <motion.h2 className="text-2xl font-bold text-white text-center mb-6" variants={textVariants}>Create Your Account</motion.h2>
-
+        {/* Error message - Enhanced visibility */}
         {error && (
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="bg-red-500 bg-opacity-70 text-white p-3 rounded-lg mb-4 text-center"
+            className="bg-red-50 border-2 border-red-300 text-red-700 p-4 rounded-xl mb-6 text-center font-semibold text-base sm:text-lg"
           >
-            {error}
+            ⚠️ {error}
           </motion.div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Full Name */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Full Name - Enhanced with icon */}
           <motion.div variants={inputVariants}>
-            <label htmlFor="name" className="block text-gray-200 text-sm font-medium mb-1">
-              Full Name
+            <label htmlFor="name" className="block text-gray-700 text-lg sm:text-xl font-bold mb-3">
+              👤 Full Name
             </label>
             <motion.input
               type="text"
@@ -239,17 +260,17 @@ const Signup = ({ onSignup }) => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              placeholder="Your full name"
+              placeholder="Enter your full name"
               required
-              className="w-full px-4 py-2 bg-white bg-opacity-70 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-600 transition-all duration-300 ease-in-out border border-white border-opacity-40"
-              whileFocus={{ scale: 1.01, boxShadow: "0 0 5px rgba(139, 92, 246, 0.5)" }} // Sexy focus animation
+              className="w-full px-5 py-4 text-lg sm:text-xl bg-gray-50 text-gray-800 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 border-2 border-gray-300 placeholder-gray-400 transition-all duration-300 ease-in-out font-medium"
+              whileFocus={{ scale: 1.02, borderColor: "#9333ea", boxShadow: "0 0 15px rgba(147, 51, 234, 0.3)" }}
             />
           </motion.div>
 
-          {/* Email */}
+          {/* Email - Enhanced with icon */}
           <motion.div variants={inputVariants}>
-            <label htmlFor="email" className="block text-gray-200 text-sm font-medium mb-1">
-              Email
+            <label htmlFor="email" className="block text-gray-700 text-lg sm:text-xl font-bold mb-3">
+              📧 Email Address
             </label>
             <motion.input
               type="email"
@@ -259,16 +280,16 @@ const Signup = ({ onSignup }) => {
               onChange={handleChange}
               placeholder="your.email@example.com"
               required
-              className="w-full px-4 py-2 bg-white bg-opacity-70 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-600 transition-all duration-300 ease-in-out border border-white border-opacity-40"
-              whileFocus={{ scale: 1.01, boxShadow: "0 0 5px rgba(139, 92, 246, 0.5)" }}
+              className="w-full px-5 py-4 text-lg sm:text-xl bg-gray-50 text-gray-800 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 border-2 border-gray-300 placeholder-gray-400 transition-all duration-300 ease-in-out font-medium"
+              whileFocus={{ scale: 1.02, borderColor: "#9333ea", boxShadow: "0 0 15px rgba(147, 51, 234, 0.3)" }}
             />
           </motion.div>
 
-          {/* Phone and Age - Responsive Layout */}
-          <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4 sm:space-y-0">
-            <motion.div className="form-group flex-1" variants={inputVariants}>
-              <label htmlFor="phone" className="block text-gray-200 text-sm font-medium mb-1">
-                Phone Number
+          {/* Phone and Age - Improved grid layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <motion.div variants={inputVariants}>
+              <label htmlFor="phone" className="block text-gray-700 text-lg sm:text-xl font-bold mb-3">
+                📱 Phone Number
               </label>
               <motion.input
                 type="tel"
@@ -278,14 +299,14 @@ const Signup = ({ onSignup }) => {
                 onChange={handleChange}
                 placeholder="+1234567890"
                 required
-                className="w-full px-4 py-2 bg-white bg-opacity-70 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-600 transition-all duration-300 ease-in-out border border-white border-opacity-40"
-                whileFocus={{ scale: 1.01, boxShadow: "0 0 5px rgba(139, 92, 246, 0.5)" }}
+                className="w-full px-5 py-4 text-lg sm:text-xl bg-gray-50 text-gray-800 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 border-2 border-gray-300 placeholder-gray-400 transition-all duration-300 ease-in-out font-medium"
+                whileFocus={{ scale: 1.02, borderColor: "#9333ea", boxShadow: "0 0 15px rgba(147, 51, 234, 0.3)" }}
               />
             </motion.div>
 
-            <motion.div className="form-group flex-1" variants={inputVariants}>
-              <label htmlFor="age" className="block text-gray-200 text-sm font-medium mb-1">
-                Age
+            <motion.div variants={inputVariants}>
+              <label htmlFor="age" className="block text-gray-700 text-lg sm:text-xl font-bold mb-3">
+                🎂 Age
               </label>
               <motion.input
                 type="number"
@@ -296,16 +317,16 @@ const Signup = ({ onSignup }) => {
                 placeholder="e.g., 30"
                 min="1"
                 required
-                className="w-full px-4 py-2 bg-white bg-opacity-70 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-600 transition-all duration-300 ease-in-out border border-white border-opacity-40"
-                whileFocus={{ scale: 1.01, boxShadow: "0 0 5px rgba(139, 92, 246, 0.5)" }}
+                className="w-full px-5 py-4 text-lg sm:text-xl bg-gray-50 text-gray-800 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 border-2 border-gray-300 placeholder-gray-400 transition-all duration-300 ease-in-out font-medium"
+                whileFocus={{ scale: 1.02, borderColor: "#9333ea", boxShadow: "0 0 15px rgba(147, 51, 234, 0.3)" }}
               />
             </motion.div>
           </div>
 
-          {/* Password */}
+          {/* Password - Enhanced with icon */}
           <motion.div variants={inputVariants}>
-            <label htmlFor="password" className="block text-gray-200 text-sm font-medium mb-1">
-              Password
+            <label htmlFor="password" className="block text-gray-700 text-lg sm:text-xl font-bold mb-3">
+              🔒 Password
             </label>
             <motion.input
               type="password"
@@ -315,15 +336,15 @@ const Signup = ({ onSignup }) => {
               onChange={handleChange}
               placeholder="Create a strong password"
               required
-              className="w-full px-4 py-2 bg-white bg-opacity-70 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-600 transition-all duration-300 ease-in-out border border-white border-opacity-40"
-              whileFocus={{ scale: 1.01, boxShadow: "0 0 5px rgba(139, 92, 246, 0.5)" }}
+              className="w-full px-5 py-4 text-lg sm:text-xl bg-gray-50 text-gray-800 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 border-2 border-gray-300 placeholder-gray-400 transition-all duration-300 ease-in-out font-medium"
+              whileFocus={{ scale: 1.02, borderColor: "#9333ea", boxShadow: "0 0 15px rgba(147, 51, 234, 0.3)" }}
             />
           </motion.div>
 
-          {/* Confirm Password */}
+          {/* Confirm Password - Enhanced with icon */}
           <motion.div variants={inputVariants}>
-            <label htmlFor="confirmPassword" className="block text-gray-200 text-sm font-medium mb-1">
-              Confirm Password
+            <label htmlFor="confirmPassword" className="block text-gray-700 text-lg sm:text-xl font-bold mb-3">
+              🔐 Confirm Password
             </label>
             <motion.input
               type="password"
@@ -331,41 +352,44 @@ const Signup = ({ onSignup }) => {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              placeholder="Confirm your password"
+              placeholder="Re-enter your password"
               required
-              className="w-full px-4 py-2 bg-white bg-opacity-70 text-black rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400 placeholder-gray-600 transition-all duration-300 ease-in-out border border-white border-opacity-40"
-              whileFocus={{ scale: 1.01, boxShadow: "0 0 5px rgba(139, 92, 246, 0.5)" }}
+              className="w-full px-5 py-4 text-lg sm:text-xl bg-gray-50 text-gray-800 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-300 border-2 border-gray-300 placeholder-gray-400 transition-all duration-300 ease-in-out font-medium"
+              whileFocus={{ scale: 1.02, borderColor: "#9333ea", boxShadow: "0 0 15px rgba(147, 51, 234, 0.3)" }}
             />
           </motion.div>
 
-          {/* Signup Button */}
+          {/* Signup Button - Enhanced size and visibility */}
           <motion.button
             type="submit"
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:ring-4 focus:ring-purple-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out transform disabled:bg-purple-400 disabled:cursor-not-allowed flex items-center justify-center"
+            className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-5 px-6 rounded-xl focus:outline-none focus:ring-4 focus:ring-purple-400 transition-all duration-300 ease-in-out transform disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-xl sm:text-2xl shadow-lg hover:shadow-xl"
             disabled={loading}
             variants={buttonVariants}
-            initial="hidden" // Use initial from buttonVariants
-            animate="visible" // Use visible from buttonVariants
-            whileHover={{ scale: 1.05 }} // Sexy hover effect
-            whileTap={{ scale: 0.95 }} // Sexy active effect
+            initial="hidden"
+            animate="visible"
+            whileHover={{ scale: 1.03, y: -2 }}
+            whileTap={{ scale: 0.98 }}
           >
             {loading ? (
-              <svg className="animate-spin h-5 w-5 text-white mr-3" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-              </svg>
+              <>
+                <svg className="animate-spin h-6 w-6 text-white mr-3" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span>Creating account...</span>
+              </>
             ) : (
-              'Sign Up'
+              <>🚀 Create Account</>
             )}
           </motion.button>
         </form>
 
-        {/* Footer Link */}
-        <motion.div className="mt-6 text-center text-gray-200" variants={textVariants}>
-          <p>
+        {/* Footer Link - Enhanced readability */}
+        <motion.div className="mt-8 text-center" variants={textVariants}>
+          <p className="text-gray-600 text-lg sm:text-xl font-medium">
             Already have an account?{' '}
-            <Link to="/login" className="text-purple-900 hover:text-purple-100 font-semibold transition-colors duration-200">
-              Log in
+            <Link to="/login" className="text-purple-600 hover:text-purple-800 font-bold transition-colors duration-200 underline decoration-2 underline-offset-4">
+              Log in here
             </Link>
           </p>
         </motion.div>

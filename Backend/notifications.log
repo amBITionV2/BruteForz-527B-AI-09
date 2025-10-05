@@ -117,3 +117,42 @@
 2025-10-05 08:23:20,949 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 08:23:20] "OPTIONS /api/chatbot/ask HTTP/1.1" 200 -
 2025-10-05 08:23:21,613 - httpx - INFO - HTTP Request: POST https://api.groq.com/openai/v1/chat/completions "HTTP/1.1 200 OK"
 2025-10-05 08:23:21,617 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 08:23:21] "POST /api/chatbot/ask HTTP/1.1" 200 -
+2025-10-05 08:31:42,353 - apscheduler.scheduler - INFO - Scheduler started
+2025-10-05 08:31:43,796 - werkzeug - INFO - [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:5000
+ * Running on http://10.10.0.122:5000
+2025-10-05 08:31:43,797 - werkzeug - INFO - [33mPress CTRL+C to quit[0m
+2025-10-05 08:31:43,800 - werkzeug - INFO -  * Restarting with stat
+2025-10-05 08:31:52,097 - apscheduler.scheduler - INFO - Scheduler started
+2025-10-05 08:31:52,153 - werkzeug - WARNING -  * Debugger is active!
+2025-10-05 08:31:52,168 - werkzeug - INFO -  * Debugger PIN: 109-431-138
+2025-10-05 09:24:33,015 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:24:33] "OPTIONS /api/login HTTP/1.1" 200 -
+2025-10-05 09:24:33,702 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:24:33] "POST /api/login HTTP/1.1" 200 -
+2025-10-05 09:25:25,004 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:25:25] "GET /api/known-persons/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:25:25,339 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:25:25] "GET /api/known-persons/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:25:25,606 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:25:25] "GET /api/known-persons/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:25:29,222 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:25:29] "OPTIONS /api/games/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:25:29,550 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:25:29] "GET /api/games/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:25:33,635 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:25:33] "GET /api/medication-reminders HTTP/1.1" 200 -
+2025-10-05 09:25:33,973 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:25:33] "GET /api/medication-reminders HTTP/1.1" 200 -
+2025-10-05 09:30:40,386 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:30:40] "GET /api/known-persons/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:30:40,651 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:30:40] "GET /api/known-persons/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:30:40,720 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:30:40] "GET /api/known-persons/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:30:44,776 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:30:44] "OPTIONS /api/games/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:30:45,118 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:30:45] "GET /api/games/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:30:55,091 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:30:55] "GET /api/medication-reminders HTTP/1.1" 200 -
+2025-10-05 09:30:55,429 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:30:55] "GET /api/medication-reminders HTTP/1.1" 200 -
+2025-10-05 09:31:01,154 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:31:01] "OPTIONS /api/contacts/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:31:01,531 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:31:01] "GET /api/contacts/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:31:05,599 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:31:05] "OPTIONS /api/games/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:31:05,954 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:31:05] "GET /api/games/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:31:13,964 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:31:13] "OPTIONS /api/games/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:31:14,302 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:31:14] "GET /api/games/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:31:16,010 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:31:16] "GET /api/known-persons/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:31:16,357 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:31:16] "GET /api/known-persons/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:31:16,620 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:31:16] "GET /api/known-persons/c6905781-746c-435a-9609-efa1cf6b4c66 HTTP/1.1" 200 -
+2025-10-05 09:34:35,374 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:34:35] "OPTIONS /api/login HTTP/1.1" 200 -
+2025-10-05 09:34:36,038 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:34:36] "POST /api/login HTTP/1.1" 200 -
+2025-10-05 09:36:41,675 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:36:41] "OPTIONS /api/login HTTP/1.1" 200 -
+2025-10-05 09:36:42,446 - werkzeug - INFO - 127.0.0.1 - - [05/Oct/2025 09:36:42] "POST /api/login HTTP/1.1" 200 -
