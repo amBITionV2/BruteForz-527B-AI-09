@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion'; // Import motion from framer-motion
-import { useTranslation } from 'react-i18next'; // Import translation hook
+import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 function Summary() {
-  const { t } = useTranslation(); // Initialize translation hook
+  const { t } = useTranslation();
   const [knownPersons, setKnownPersons] = useState([]);
   const [selectedPersonId, setSelectedPersonId] = useState('');
   const [summaryData, setSummaryData] = useState(null);
@@ -21,6 +21,16 @@ function Summary() {
   const [chatMessages, setChatMessages] = useState([]);
   const [chatInput, setChatInput] = useState('');
   const [isChatLoading, setIsChatLoading] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const chatMessagesEndRef = useRef(null);
+
+  const scrollToBottom = () => {
+    chatMessagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [chatMessages]);
 
   useEffect(() => {
     const fetchKnownPersons = async () => {
@@ -34,7 +44,6 @@ function Summary() {
         }
 
         const response = await axios.get(`http://localhost:5000/api/known-persons/${patientId}`);
-        //const response = await axios.get(`https://echomind-6.onrender.com/api/known-persons/${patientId}`);
 
         if (response.data.success) {
           setKnownPersons(response.data.known_persons || []);
@@ -75,7 +84,6 @@ function Summary() {
       setSummaryData(null);
 
       const response = await axios.get('http://localhost:5000/api/summarize-conversation', {
-     /* const response = await axios.get('https://echomind-6.onrender.com/api/summarize-conversation', {*/
         params: {
           patient_id: patientId,
           known_person_id: selectedPersonId,
@@ -103,8 +111,7 @@ function Summary() {
       setError(null);
       setSummaryData(null);
 
-     const response = await axios.get('http://localhost:5000/api/summarize-all-conversations', {
-      /*const response = await axios.get('https://echomind-6.onrender.com/api/summarize-all-conversations', {*/
+      const response = await axios.get('http://localhost:5000/api/summarize-all-conversations', {
         params: {
           patient_id: patientId,
           known_person_id: selectedPersonId
@@ -126,7 +133,7 @@ function Summary() {
 
   const handlePersonChange = (e) => {
     setSelectedPersonId(e.target.value);
-    setSummaryData(null); // Clear summary when person changes
+    setSummaryData(null);
   };
 
   const formatDate = (dateString) => {
@@ -170,7 +177,6 @@ function Summary() {
     
     try {
       const response = await axios.post('http://localhost:5000/api/chatbot/ask', {
-        /* const response = await axios.post('https://echomind-6.onrender.com/api/chatbot/ask', { */
         question: chatInput,
         patient_id: patientId
       });
@@ -270,7 +276,6 @@ function Summary() {
     );
   };
 
-  // Framer Motion Variants for repeated animations
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -340,104 +345,150 @@ function Summary() {
         </motion.div>
       )}
 
-      {/* Chatbot Section */}
-      <motion.div
-        className="bg-white/10 backdrop-blur-md rounded-2xl p-6 mb-8 shadow-xl max-w-3xl mx-auto border border-black"
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 80, damping: 10, delay: 0.2 }}
-      >
-        <div className="flex items-center gap-3 mb-4">
-          <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-300">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-            <path d="M9 10h.01"></path>
-            <path d="M15 10h.01"></path>
-          </svg>
-          <h2 className="text-2xl font-bold text-white">Ask About Your Conversations</h2>
-        </div>
-        
-        <p className="text-gray-300 text-sm mb-4">
-          Ask me anything about your recorded conversations. I'll answer based only on what has been discussed.
-        </p>
+      {/* Floating Chatbot Button */}
+      <AnimatePresence>
+        {!isChatOpen && (
+          <motion.button
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            exit={{ scale: 0, opacity: 0 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => setIsChatOpen(true)}
+            className="fixed bottom-6 right-6 z-50 w-16 h-16 bg-gradient-to-br from-purple-600 to-indigo-600 rounded-full shadow-2xl flex items-center justify-center border-2 border-white hover:shadow-purple-500/50 transition-shadow duration-300"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+              <path d="M9 10h.01"></path>
+              <path d="M15 10h.01"></path>
+            </svg>
+            {chatMessages.length > 0 && (
+              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-xs flex items-center justify-center font-bold border-2 border-white">
+                {chatMessages.length}
+              </span>
+            )}
+          </motion.button>
+        )}
+      </AnimatePresence>
 
-        {/* Chat Messages */}
-        <div className="bg-gray-800 bg-opacity-40 rounded-xl p-4 mb-4 max-h-80 overflow-y-auto space-y-3 custom-scrollbar">
-          {chatMessages.length === 0 ? (
-            <div className="text-center text-gray-400 py-8">
-              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-3 opacity-50">
-                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-              </svg>
-              <p className="text-lg">Start by asking a question!</p>
-              <p className="text-sm mt-2">For example: "What did we talk about yesterday?" or "Who did I speak with recently?"</p>
-            </div>
-          ) : (
-            chatMessages.map((msg, idx) => (
-              <motion.div
-                key={idx}
-                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <div
-                  className={`max-w-[80%] p-3 rounded-lg ${
-                    msg.role === 'user'
-                      ? 'bg-purple-600 text-white rounded-br-none'
-                      : 'bg-gray-700 text-gray-100 rounded-bl-none'
-                  }`}
-                >
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
-                  {msg.metadata && (
-                    <p className="text-xs opacity-70 mt-2">
-                      Based on {msg.metadata.conversation_count} messages with {msg.metadata.people_involved?.join(', ')}
-                    </p>
-                  )}
+      {/* Chatbot Popup */}
+      <AnimatePresence>
+        {isChatOpen && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            className="fixed bottom-6 right-6 z-50 w-96 h-[600px] bg-gray-900 bg-opacity-95 backdrop-blur-lg rounded-2xl shadow-2xl border border-purple-500 flex flex-col overflow-hidden"
+          >
+            {/* Chatbot Header */}
+            <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-4 flex items-center justify-between border-b border-purple-500">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    <path d="M9 10h.01"></path>
+                    <path d="M15 10h.01"></path>
+                  </svg>
                 </div>
-              </motion.div>
-            ))
-          )}
-          {isChatLoading && (
-            <motion.div
-              className="flex justify-start"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-            >
-              <div className="bg-gray-700 text-gray-100 p-3 rounded-lg rounded-bl-none">
-                <div className="flex gap-1">
-                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
-                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
-                  <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                <div>
+                  <h3 className="text-white font-bold text-lg">Chat Assistant</h3>
+                  <p className="text-purple-200 text-xs">Ask about your conversations</p>
                 </div>
               </div>
-            </motion.div>
-          )}
-        </div>
+              <button
+                onClick={() => setIsChatOpen(false)}
+                className="text-white hover:bg-white hover:bg-opacity-20 rounded-full p-2 transition-colors"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
 
-        {/* Chat Input */}
-        <form onSubmit={handleChatSubmit} className="flex gap-2">
-          <input
-            type="text"
-            value={chatInput}
-            onChange={(e) => setChatInput(e.target.value)}
-            placeholder="Ask a question about your conversations..."
-            className="flex-1 p-3 rounded-lg bg-gray-700 bg-opacity-50 border border-gray-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition duration-200"
-            disabled={isChatLoading}
-          />
-          <motion.button
-            type="submit"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            disabled={isChatLoading || !chatInput.trim()}
-            className="px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-lg transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed border border-black flex items-center gap-2"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="22" y1="2" x2="11" y2="13"></line>
-              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-            </svg>
-            Ask
-          </motion.button>
-        </form>
-      </motion.div>
+            {/* Chat Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              {chatMessages.length === 0 ? (
+                <div className="text-center text-gray-400 py-8">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="mx-auto mb-3 opacity-50">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                  </svg>
+                  <p className="text-sm">Start by asking a question!</p>
+                  <p className="text-xs mt-2 px-4">For example: "What did we talk about yesterday?"</p>
+                </div>
+              ) : (
+                chatMessages.map((msg, idx) => (
+                  <motion.div
+                    key={idx}
+                    className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div
+                      className={`max-w-[80%] p-3 rounded-lg ${
+                        msg.role === 'user'
+                          ? 'bg-purple-600 text-white rounded-br-none'
+                          : 'bg-gray-700 text-gray-100 rounded-bl-none'
+                      }`}
+                    >
+                      <p className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                      {msg.metadata && (
+                        <p className="text-xs opacity-70 mt-2">
+                          Based on {msg.metadata.conversation_count} messages
+                        </p>
+                      )}
+                    </div>
+                  </motion.div>
+                ))
+              )}
+              {isChatLoading && (
+                <motion.div
+                  className="flex justify-start"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                >
+                  <div className="bg-gray-700 text-gray-100 p-3 rounded-lg rounded-bl-none">
+                    <div className="flex gap-1">
+                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                      <span className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+              <div ref={chatMessagesEndRef} />
+            </div>
+
+            {/* Chat Input */}
+            <form onSubmit={handleChatSubmit} className="p-4 border-t border-gray-700 bg-gray-800 bg-opacity-50">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={chatInput}
+                  onChange={(e) => setChatInput(e.target.value)}
+                  placeholder="Type your question..."
+                  className="flex-1 p-3 rounded-lg bg-gray-700 border border-gray-600 text-white placeholder-gray-400 focus:ring-2 focus:ring-purple-400 focus:border-transparent transition duration-200 text-sm"
+                  disabled={isChatLoading}
+                />
+                <motion.button
+                  type="submit"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  disabled={isChatLoading || !chatInput.trim()}
+                  className="px-4 py-3 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-lg shadow-lg transition duration-300 ease-in-out disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                  </svg>
+                </motion.button>
+              </div>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Control Panel */}
       <motion.div
@@ -602,7 +653,7 @@ function Summary() {
                   </svg>
                   {t('originalMessages')}
                 </h3>
-                <div className="space-y-4 max-h-96 overflow-y-auto pr-2 custom-scrollbar">
+                <div className="space-y-4 max-h-96 overflow-y-auto pr-2">
                   {summaryData.original_messages.map((message, index) => (
                     <motion.div
                       key={index}
@@ -643,7 +694,7 @@ function Summary() {
                   </svg>
                   {t('conversationHistory')}
                 </h3>
-                <div className="relative border-l-2 border-gray-600 pl-6 custom-scrollbar max-h-96 overflow-y-auto">
+                <div className="relative border-l-2 border-gray-600 pl-6 max-h-96 overflow-y-auto">
                   {summaryData.conversation_dates && summaryData.conversation_dates.map((date, idx) => (
                     <motion.div key={date} className="mb-8 relative" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, delay: idx * 0.1 }}>
                       <div className="absolute -left-7 top-0 flex items-center justify-center w-6 h-6 bg-purple-500 rounded-full border-2 border-purple-300">
